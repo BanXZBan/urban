@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ZeroForgeX · Typing Arena</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZeroForgeDemo · Typing Suite</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ----- ANIMATED GRADIENT BACKGROUND (vivid purple-cyan) ----- */
-    @keyframes gradientMove {
+    /* ---- ANIMATED GRADIENT (blue-cyan-teal) ---- */
+    @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
@@ -15,88 +15,84 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(-45deg, #120c24, #2d1b4e, #1a0f2a, #0b0a14);
+      background: linear-gradient(-45deg, #08101a, #102a3a, #0a1e2e, #142c3c);
       background-size: 400% 400%;
-      animation: gradientMove 18s ease infinite;
+      animation: gradientFlow 14s ease infinite;
       font-family: 'Segoe UI', system-ui, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      color: #f0eaff;
+      color: #e0f0fa;
     }
 
-    /* ----- INTRO OVERLAY (click only) ----- */
+    /* ---- INTRO OVERLAY (auto‑fade) ---- */
     #intro-overlay {
       position: fixed;
       inset: 0;
-      background: #0b0a14;
+      background: #0a121c;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      transition: opacity 0.8s ease;
-      cursor: pointer;
+      transition: opacity 1s ease;
       text-align: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(6px);
+      pointer-events: none; /* so clicks pass through after fade */
     }
     #intro-overlay.hidden {
       opacity: 0;
       pointer-events: none;
     }
     #intro-overlay h1 {
-      font-size: 5rem;
+      font-size: 4.8rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #d8c8ff, #a88aff);
+      background: linear-gradient(135deg, #7fc8f0, #4aa8d8, #2a8aba);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin: 0;
-      letter-spacing: 6px;
-      text-shadow: 0 0 60px rgba(168, 138, 255, 0.3);
+      letter-spacing: 4px;
+      text-shadow: 0 0 60px rgba(74, 168, 216, 0.25);
     }
     #intro-overlay .sub {
       font-size: 1.4rem;
-      color: #b8a6ff;
-      margin-top: 8px;
-      letter-spacing: 8px;
+      color: #80b8d8;
+      margin-top: 6px;
+      letter-spacing: 6px;
+      -webkit-text-fill-color: #80b8d8;
     }
-    #intro-overlay .creator {
-      margin-top: 28px;
-      font-size: 1rem;
-      color: #8a7ab0;
-      border-top: 1px solid #3a2a5a;
-      padding-top: 18px;
-      width: 220px;
-    }
-    #intro-overlay .click-hint {
+    #intro-overlay .loader {
       margin-top: 40px;
-      font-size: 0.9rem;
-      color: #6a5a8a;
-      animation: pulse 1.8s ease-in-out infinite;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(74, 168, 216, 0.1);
+      border-top: 3px solid #4aa8d8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* ----- MAIN APP (semi‑transparent to show background) ----- */
+    /* ---- MAIN APP (semi‑transparent) ---- */
     .app {
       width: 100%;
       max-width: 1300px;
-      background: rgba(13, 11, 22, 0.65);
-      backdrop-filter: blur(6px);
+      background: rgba(8, 16, 26, 0.65);
+      backdrop-filter: blur(8px);
       border-radius: 32px;
       padding: 24px 28px 36px;
-      border: 1px solid rgba(158, 129, 254, 0.25);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 80px rgba(158,129,254,0.08);
+      border: 1px solid rgba(74, 168, 216, 0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 60px rgba(74,168,216,0.05);
       position: relative;
     }
 
-    /* ----- HEADER ----- */
+    /* ---- HEADER ---- */
     .app-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
-      border-bottom: 1px solid rgba(158,129,254,0.15);
+      border-bottom: 1px solid rgba(74, 168, 216, 0.15);
       padding-bottom: 14px;
       flex-wrap: wrap;
       gap: 12px;
@@ -109,135 +105,100 @@
     .app-header .brand h1 {
       font-size: 1.8rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #d8c8ff, #a88aff);
+      background: linear-gradient(135deg, #7fc8f0, #4aa8d8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin: 0;
       letter-spacing: 1px;
     }
-    .app-header .brand small {
-      color: #8a7ab0;
+    .app-header .brand .version {
+      color: #6a9ab0;
       font-size: 0.8rem;
       letter-spacing: 2px;
+      background: rgba(74,168,216,0.1);
+      padding: 2px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(74,168,216,0.15);
     }
     .header-actions {
       display: flex;
       align-items: center;
       gap: 14px;
-      flex-wrap: wrap;
     }
-    .header-actions .creator-tag {
-      color: #a088c0;
-      font-size: 0.85rem;
-      background: rgba(158,129,254,0.1);
-      padding: 4px 14px;
-      border-radius: 40px;
-      border: 1px solid rgba(158,129,254,0.2);
-    }
-    .header-actions .btn-dashboard {
-      background: rgba(158,129,254,0.12);
-      border: 1px solid rgba(158,129,254,0.25);
-      color: #d8c8ff;
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.2s;
-      font-weight: 500;
-    }
-    .header-actions .btn-dashboard:hover {
-      background: rgba(158,129,254,0.25);
-      box-shadow: 0 0 20px rgba(158,129,254,0.15);
-    }
-    .header-actions .btn-signin {
-      background: linear-gradient(135deg, #d8c8ff, #a88aff);
+    .sidebar-toggle {
+      background: transparent;
       border: none;
-      color: #0d0b16;
-      padding: 6px 18px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      color: #a0c8e0;
+      font-size: 28px;
       cursor: pointer;
       transition: 0.2s;
+      line-height: 1;
     }
-    .header-actions .btn-signin:hover {
+    .sidebar-toggle:hover {
+      color: #c0e4f4;
       transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(168,138,255,0.4);
-    }
-    .user-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #a88aff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #0d0b16;
-      font-weight: 700;
-      font-size: 1rem;
-      border: 2px solid rgba(255,255,255,0.1);
     }
 
-    /* ----- SIDEBAR (Dashboard) ----- */
+    /* ---- SIDEBAR ---- */
     .sidebar {
       position: fixed;
       top: 0;
       left: -380px;
       width: 350px;
       height: 100vh;
-      background: rgba(13, 11, 22, 0.96);
+      background: rgba(8, 16, 26, 0.96);
       backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(158,129,254,0.3);
+      border-right: 1px solid rgba(74, 168, 216, 0.25);
       padding: 28px 24px;
       transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 1000;
       overflow-y: auto;
-      box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+      box-shadow: 4px 0 40px rgba(0,0,0,0.5);
     }
     .sidebar.open { left: 0; }
     .sidebar-close {
       background: transparent;
       border: none;
-      color: #b8a6ff;
+      color: #90b8d0;
       font-size: 28px;
       cursor: pointer;
       float: right;
       margin-bottom: 20px;
       transition: 0.2s;
     }
-    .sidebar-close:hover { color: #d8c8ff; }
+    .sidebar-close:hover { color: #c0e4f4; }
     .sidebar h2 {
-      color: #d8c8ff;
+      color: #c0e4f4;
       font-weight: 400;
       font-size: 1.5rem;
-      border-bottom: 1px solid rgba(158,129,254,0.15);
+      border-bottom: 1px solid rgba(74,168,216,0.12);
       padding-bottom: 12px;
       margin-top: 0;
       clear: both;
     }
     .sidebar .stat-card {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.02);
       border-radius: 14px;
       padding: 14px 18px;
       margin: 12px 0;
-      border: 1px solid rgba(158,129,254,0.08);
+      border: 1px solid rgba(74,168,216,0.06);
     }
     .sidebar .stat-card .label {
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #8a7ab0;
+      color: #6a9ab0;
     }
     .sidebar .stat-card .value {
       font-size: 1.8rem;
       font-weight: 600;
-      color: #e0d4ff;
+      color: #d0ecf8;
     }
-    .sidebar .stat-card .value.accent { color: #b8a6ff; }
-    .sidebar .stat-card .value.green { color: #7ad0a0; }
+    .sidebar .stat-card .value.accent { color: #7fc8f0; }
+    .sidebar .stat-card .value.green { color: #6ac8a0; }
     .sidebar .reset-btn {
-      background: rgba(248,81,73,0.15);
-      border: 1px solid rgba(248,81,73,0.3);
+      background: rgba(248,81,73,0.12);
+      border: 1px solid rgba(248,81,73,0.2);
       color: #f85149;
       padding: 6px 18px;
       border-radius: 30px;
@@ -248,7 +209,7 @@
     }
     .sidebar .reset-btn:hover {
       background: #f85149;
-      color: #0d0b16;
+      color: #0a121c;
     }
     .sidebar .quick-nav {
       display: flex;
@@ -257,9 +218,9 @@
       margin: 20px 0;
     }
     .sidebar .quick-nav button {
-      background: rgba(158,129,254,0.08);
-      border: 1px solid rgba(158,129,254,0.15);
-      color: #c8b8f0;
+      background: rgba(74,168,216,0.06);
+      border: 1px solid rgba(74,168,216,0.1);
+      color: #b0d8ec;
       padding: 10px 14px;
       border-radius: 12px;
       text-align: left;
@@ -268,13 +229,21 @@
       transition: 0.2s;
     }
     .sidebar .quick-nav button:hover {
-      background: rgba(158,129,254,0.2);
-      border-color: rgba(158,129,254,0.4);
+      background: rgba(74,168,216,0.15);
+      border-color: rgba(74,168,216,0.25);
+    }
+    .sidebar .footer-credit {
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(74,168,216,0.08);
+      color: #4a7a90;
+      font-size: 0.8rem;
+      text-align: center;
     }
     .sidebar-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.4);
       z-index: 999;
       opacity: 0;
       pointer-events: none;
@@ -285,47 +254,51 @@
       pointer-events: all;
     }
 
-    /* ----- BUTTON (from user, purple) ----- */
-    .btn-typing,
-    .btn-typing:focus {
+    /* ---- BUTTON (cyan version) ---- */
+    .btn-action,
+    .btn-action:focus {
       font-size: 17px;
       padding: 10px 25px;
       border-radius: 0.7rem;
-      background-image: linear-gradient(rgb(214, 202, 254), rgb(158, 129, 254));
-      border: 2px solid rgb(50, 50, 50);
-      border-bottom: 5px solid rgb(50, 50, 50);
-      box-shadow: 0px 1px 6px 0px rgb(158, 129, 254);
+      background-image: linear-gradient(#7fc8f0, #4aa8d8);
+      border: 2px solid #2a5a7a;
+      border-bottom: 5px solid #2a5a7a;
+      box-shadow: 0px 1px 6px 0px rgba(74,168,216,0.4);
       transform: translate(0, -3px);
       cursor: pointer;
       transition: 0.2s;
       transition-timing-function: linear;
-      color: #0d0b16;
+      color: #0a121c;
       font-weight: 600;
     }
-    .btn-typing:active {
+    .btn-action:active {
       transform: translate(0, 0);
-      border-bottom: 2px solid rgb(50, 50, 50);
+      border-bottom: 2px solid #2a5a7a;
     }
-    .btn-typing:disabled {
+    .btn-action:disabled {
       opacity: 0.4;
       transform: translate(0,0);
-      border-bottom: 2px solid rgb(50,50,50);
+      border-bottom: 2px solid #2a5a7a;
       pointer-events: none;
     }
+    .btn-secondary {
+      background-image: linear-gradient(#b0d8ec, #80b8d8);
+      border-color: #3a6a8a;
+    }
 
-    /* ----- NAV TABS ----- */
+    /* ---- NAV TABS ---- */
     .nav {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 22px;
-      border-bottom: 1px solid rgba(158,129,254,0.15);
+      border-bottom: 1px solid rgba(74,168,216,0.12);
       padding-bottom: 10px;
     }
     .nav-btn {
       background: transparent;
       border: none;
-      color: #8a7ab0;
+      color: #6a9ab0;
       font-size: 16px;
       font-weight: 600;
       padding: 8px 18px;
@@ -334,16 +307,16 @@
       transition: 0.2s;
     }
     .nav-btn:hover {
-      color: #e0d4ff;
-      background: rgba(158,129,254,0.08);
+      color: #c0e4f4;
+      background: rgba(74,168,216,0.06);
     }
     .nav-btn.active {
-      color: #0d0b16;
-      background: linear-gradient(135deg, rgb(214, 202, 254), rgb(158, 129, 254));
-      box-shadow: 0 0 20px rgba(158,129,254,0.25);
+      color: #0a121c;
+      background: linear-gradient(135deg, #7fc8f0, #4aa8d8);
+      box-shadow: 0 0 20px rgba(74,168,216,0.2);
     }
 
-    /* ----- PANELS ----- */
+    /* ---- PANELS ---- */
     .panel {
       display: none;
       animation: fade 0.25s ease;
@@ -357,7 +330,7 @@
       font-weight: 500;
       font-size: 1.6rem;
       margin-bottom: 16px;
-      color: #e0d4ff;
+      color: #c0e4f4;
       letter-spacing: -0.3px;
     }
     .stat-grid {
@@ -365,10 +338,10 @@
       flex-wrap: wrap;
       gap: 20px 40px;
       margin: 18px 0 22px;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.02);
       padding: 14px 22px;
       border-radius: 14px;
-      border: 1px solid rgba(158,129,254,0.08);
+      border: 1px solid rgba(74,168,216,0.06);
     }
     .stat-item {
       display: flex;
@@ -376,7 +349,7 @@
       gap: 8px;
     }
     .stat-label {
-      color: #8a7ab0;
+      color: #6a9ab0;
       font-size: 14px;
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -384,48 +357,85 @@
     .stat-value {
       font-weight: 700;
       font-size: 22px;
-      color: #e0d4ff;
+      color: #d0ecf8;
     }
-    .stat-value.accent { color: #b8a6ff; }
-    .stat-value.green { color: #7ad0a0; }
-    .stat-value.orange { color: #d4b07a; }
+    .stat-value.accent { color: #7fc8f0; }
+    .stat-value.green { color: #6ac8a0; }
+    .stat-value.orange { color: #e0b87a; }
 
-    /* ----- TYPING ----- */
+    /* ---- HOME & DASHBOARD ---- */
+    .home-welcome {
+      font-size: 1.2rem;
+      color: #90b8d0;
+      margin-bottom: 20px;
+    }
+    .home-welcome strong {
+      color: #7fc8f0;
+      font-weight: 600;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin: 18px 0;
+    }
+    .dashboard-grid .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(74,168,216,0.06);
+      border-radius: 16px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .dashboard-grid .card .num {
+      font-size: 2.6rem;
+      font-weight: 600;
+      color: #7fc8f0;
+    }
+    .dashboard-grid .card .num.green { color: #6ac8a0; }
+    .dashboard-grid .card .lbl {
+      font-size: 0.8rem;
+      color: #6a9ab0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* ---- TYPING ---- */
     .words-container {
       font-size: 28px;
       line-height: 1.6;
       letter-spacing: 0.5px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.25);
       padding: 24px 28px;
       border-radius: 16px;
-      border: 1px solid rgba(158,129,254,0.1);
+      border: 1px solid rgba(74,168,216,0.08);
       min-height: 120px;
       margin: 12px 0 18px;
       word-break: break-word;
-      color: #8a7ab0;
+      color: #6a9ab0;
       font-weight: 400;
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
     }
-    .words-container .correct { color: #7ad0a0; }
-    .words-container .incorrect { color: #f85149; background: rgba(248,81,73,0.12); border-radius: 4px; }
-    .words-container .current { background: #b8a6ff; color: #0d0b16; border-radius: 4px; padding: 0 2px; }
-    .words-container .pending { color: #c8b8f0; }
+    .words-container .correct { color: #6ac8a0; }
+    .words-container .incorrect { color: #f85149; background: rgba(248,81,73,0.08); border-radius: 4px; }
+    .words-container .current { background: #7fc8f0; color: #0a121c; border-radius: 4px; padding: 0 2px; }
+    .words-container .pending { color: #b0d8ec; }
 
     #typing-input {
       width: 100%;
       padding: 14px 18px;
       font-size: 20px;
       font-family: 'JetBrains Mono', monospace;
-      background: rgba(0,0,0,0.4);
-      border: 2px solid rgba(158,129,254,0.15);
+      background: rgba(0,0,0,0.3);
+      border: 2px solid rgba(74,168,216,0.12);
       border-radius: 12px;
-      color: #f0eaff;
+      color: #e0f0fa;
       outline: none;
       transition: 0.2s;
     }
     #typing-input:focus {
-      border-color: #b8a6ff;
-      box-shadow: 0 0 0 3px rgba(158,129,254,0.15);
+      border-color: #7fc8f0;
+      box-shadow: 0 0 0 3px rgba(74,168,216,0.12);
     }
     #typing-input:disabled { opacity: 0.5; }
     .typing-controls {
@@ -440,10 +450,10 @@
       font-weight: 600;
       font-variant-numeric: tabular-nums;
       min-width: 80px;
-      color: #b8a6ff;
+      color: #7fc8f0;
     }
 
-    /* ----- CPS ----- */
+    /* ---- CPS ---- */
     .cps-area {
       display: flex;
       flex-direction: column;
@@ -457,11 +467,11 @@
       border-radius: 50%;
       font-size: 28px;
       font-weight: 700;
-      background: linear-gradient(145deg, #1a142b, #0d0b16);
-      border: 3px solid rgba(158,129,254,0.3);
-      color: #e0d4ff;
+      background: linear-gradient(145deg, #102a3a, #08101a);
+      border: 3px solid rgba(74,168,216,0.25);
+      color: #d0ecf8;
       cursor: pointer;
-      box-shadow: 0 8px 0 #100e1a;
+      box-shadow: 0 8px 0 #0a1a26;
       transition: 0.08s linear;
       user-select: none;
       display: flex;
@@ -471,12 +481,12 @@
     }
     .cps-btn:active {
       transform: scale(0.96);
-      box-shadow: 0 4px 0 #100e1a;
+      box-shadow: 0 4px 0 #0a1a26;
     }
     .cps-btn:disabled {
       opacity: 0.4;
       transform: scale(0.98);
-      box-shadow: 0 4px 0 #100e1a;
+      box-shadow: 0 4px 0 #0a1a26;
       pointer-events: none;
     }
     .cps-stats {
@@ -486,13 +496,13 @@
       justify-content: center;
     }
     .cps-stats .stat-item {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.02);
       padding: 12px 28px;
       border-radius: 40px;
-      border: 1px solid rgba(158,129,254,0.08);
+      border: 1px solid rgba(74,168,216,0.06);
     }
 
-    /* ----- TIMER ----- */
+    /* ---- TIMER ---- */
     .timer-panel {
       display: flex;
       flex-direction: column;
@@ -505,11 +515,11 @@
       font-weight: 300;
       font-variant-numeric: tabular-nums;
       letter-spacing: 4px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.2);
       padding: 16px 48px;
       border-radius: 30px;
-      border: 1px solid rgba(158,129,254,0.1);
-      color: #e0d4ff;
+      border: 1px solid rgba(74,168,216,0.08);
+      color: #d0ecf8;
     }
     .timer-controls {
       display: flex;
@@ -524,25 +534,25 @@
       flex-wrap: wrap;
     }
     .timer-input-group label {
-      color: #8a7ab0;
+      color: #6a9ab0;
       font-size: 14px;
     }
     .timer-input-group input {
       width: 70px;
       padding: 6px 10px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(158,129,254,0.15);
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(74,168,216,0.12);
       border-radius: 8px;
-      color: #f0eaff;
+      color: #e0f0fa;
       font-size: 18px;
       text-align: center;
     }
     .timer-input-group input:focus {
-      border-color: #b8a6ff;
+      border-color: #7fc8f0;
       outline: none;
     }
 
-    /* ----- RESPONSIVE ----- */
+    /* ---- RESPONSIVE ---- */
     @media (max-width: 700px) {
       .app { padding: 16px; }
       .words-container { font-size: 20px; padding: 16px; }
@@ -551,8 +561,6 @@
       .cps-btn { width: 150px; height: 150px; font-size: 20px; }
       .sidebar { width: 280px; left: -300px; }
       #intro-overlay h1 { font-size: 2.8rem; }
-      .header-actions .btn-dashboard { font-size: 0.8rem; padding: 4px 12px; }
-      .header-actions .btn-signin { font-size: 0.8rem; padding: 4px 12px; }
     }
     @media (max-width: 500px) {
       .nav-btn { font-size: 14px; padding: 6px 12px; }
@@ -562,18 +570,17 @@
 </head>
 <body>
 
-<!-- INTRO OVERLAY (click only) -->
+<!-- INTRO OVERLAY (auto‑fade) -->
 <div id="intro-overlay">
-  <h1>ZeroForgeX</h1>
-  <div class="sub">T Y P I N G · A R E N A</div>
-  <div class="creator">Creator : Urban</div>
-  <div class="click-hint">click anywhere to enter</div>
+  <h1>ZeroForgeDemo</h1>
+  <div class="sub">Demo version</div>
+  <div class="loader"></div>
 </div>
 
 <!-- SIDEBAR OVERLAY -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<!-- SIDEBAR (Dashboard) -->
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <button class="sidebar-close" id="sidebar-close-btn">✕</button>
   <h2>📊 Dashboard</h2>
@@ -595,43 +602,70 @@
   </div>
   <button class="reset-btn" id="side-reset-btn">🗑 Reset All Stats</button>
   <div class="quick-nav">
-    <button data-panel="typing">⌨️ Typing Test</button>
-    <button data-panel="cps">🖱️ CPS Test</button>
+    <button data-panel="home">🏠 Home</button>
+    <button data-panel="dashboard">📊 Dashboard</button>
+    <button data-panel="typing">⌨️ Typing</button>
+    <button data-panel="cps">🖱️ CPS</button>
     <button data-panel="timer">⏱️ Timer</button>
   </div>
-  <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(158,129,254,0.1); color:#6a5a8a; font-size:0.75rem; text-align:center;">
-    ZeroForgeX v3 · Creator: Urban
-  </div>
+  <div class="footer-credit">Creator : Urban</div>
 </div>
 
 <!-- MAIN APP -->
 <div class="app" id="app">
+
   <!-- HEADER -->
   <div class="app-header">
     <div class="brand">
-      <h1>ZeroForgeX</h1>
-      <small>⚡ typing arena</small>
+      <h1>ZeroForgeDemo</h1>
+      <span class="version">Demo version</span>
     </div>
     <div class="header-actions">
-      <span class="creator-tag">Creator : Urban</span>
-      <button class="btn-dashboard" id="dashboard-toggle-btn">📋 Dashboard</button>
-      <button class="btn-signin" id="signin-btn">🔑 Sign in with Google</button>
-      <span id="user-display" style="display:none; align-items:center; gap:8px;">
-        <span class="user-avatar" id="user-avatar">U</span>
-        <span id="user-name" style="color:#d8c8ff;font-size:0.9rem;"></span>
-      </span>
+      <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle sidebar">☰</button>
     </div>
   </div>
 
   <!-- NAVIGATION TABS -->
   <div class="nav">
-    <button class="nav-btn active" data-panel="typing">⌨️ Typing</button>
+    <button class="nav-btn active" data-panel="home">🏠 Home</button>
+    <button class="nav-btn" data-panel="dashboard">📊 Dashboard</button>
+    <button class="nav-btn" data-panel="typing">⌨️ Typing</button>
     <button class="nav-btn" data-panel="cps">🖱️ CPS</button>
     <button class="nav-btn" data-panel="timer">⏱️ Timer</button>
   </div>
 
-  <!-- PANEL: TYPING -->
-  <div class="panel active" id="panel-typing">
+  <!-- ========== PANEL: HOME ========== -->
+  <div class="panel active" id="panel-home">
+    <h2>🏠 Welcome</h2>
+    <div class="home-welcome">
+      <strong>ZeroForgeDemo</strong> – a compact typing suite for WPM, CPS, and timers.<br />
+      All data stays in your browser. Choose a test from the tabs above.
+    </div>
+    <div class="stat-grid" style="border-color:rgba(74,168,216,0.1);">
+      <div class="stat-item"><span class="stat-label">Best WPM</span><span class="stat-value accent" id="home-best-wpm">—</span></div>
+      <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green" id="home-avg-acc">—</span></div>
+      <div class="stat-item"><span class="stat-label">Tests</span><span class="stat-value" id="home-tests">0</span></div>
+    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;">
+      <button class="btn-action" id="home-typing-btn">▶ Start Typing</button>
+      <button class="btn-action btn-secondary" id="home-cps-btn">🖱️ CPS Test</button>
+    </div>
+  </div>
+
+  <!-- ========== PANEL: DASHBOARD ========== -->
+  <div class="panel" id="panel-dashboard">
+    <h2>📊 Full Dashboard</h2>
+    <div class="dashboard-grid">
+      <div class="card"><div class="num" id="dash-best-wpm">—</div><div class="lbl">Best WPM</div></div>
+      <div class="card"><div class="num green" id="dash-avg-acc">—</div><div class="lbl">Avg Accuracy</div></div>
+      <div class="card"><div class="num" id="dash-tests">0</div><div class="lbl">Tests Taken</div></div>
+      <div class="card"><div class="num" id="dash-clicks">0</div><div class="lbl">Total Clicks</div></div>
+    </div>
+    <p style="color:#6a9ab0;font-size:0.9rem;">Stats are saved locally. Use the sidebar to reset.</p>
+  </div>
+
+  <!-- ========== PANEL: TYPING ========== -->
+  <div class="panel" id="panel-typing">
     <h2>⌨️ Typing Test</h2>
     <div class="stat-grid">
       <div class="stat-item"><span class="stat-label">WPM</span><span class="stat-value accent" id="wpm-display">0</span></div>
@@ -644,12 +678,12 @@
     </div>
     <input type="text" id="typing-input" placeholder="Type here..." disabled autofocus />
     <div class="typing-controls">
-      <button class="btn-typing" id="typing-start-btn">▶ Start Test</button>
-      <button class="btn-typing" id="typing-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
+      <button class="btn-action" id="typing-start-btn">▶ Start Test</button>
+      <button class="btn-action btn-secondary" id="typing-reset-btn">⟲ Reset</button>
       <div class="timer-display" id="typing-timer-large">00:00</div>
       <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-        <label style="color:#8a7ab0;font-size:14px;">Words:</label>
-        <select id="word-count-select" style="background:rgba(0,0,0,0.4);color:#f0eaff;border:1px solid rgba(158,129,254,0.2);border-radius:8px;padding:4px 8px;">
+        <label style="color:#6a9ab0;font-size:14px;">Words:</label>
+        <select id="word-count-select" style="background:rgba(0,0,0,0.3);color:#e0f0fa;border:1px solid rgba(74,168,216,0.15);border-radius:8px;padding:4px 8px;">
           <option value="10">10</option>
           <option value="25" selected>25</option>
           <option value="50">50</option>
@@ -659,7 +693,7 @@
     </div>
   </div>
 
-  <!-- PANEL: CPS -->
+  <!-- ========== PANEL: CPS ========== -->
   <div class="panel" id="panel-cps">
     <h2>🖱️ CPS (Clicks Per Second)</h2>
     <div class="cps-area">
@@ -668,35 +702,35 @@
         <div class="stat-item"><span class="stat-label">Clicks</span><span class="stat-value" id="clicks-value">0</span></div>
         <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="cps-time">0.0s</span></div>
       </div>
-      <button class="cps-btn" id="cps-click-btn">🖱️<br><span style="font-size:16px;font-weight:400;">Click me</span></button>
+      <button class="cps-btn" id="cps-click-btn">🖱️<br /><span style="font-size:16px;font-weight:400;">Click me</span></button>
       <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
-        <button class="btn-typing" id="cps-start-btn">▶ Start 5s Test</button>
-        <button class="btn-typing" id="cps-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
+        <button class="btn-action" id="cps-start-btn">▶ Start 5s Test</button>
+        <button class="btn-action btn-secondary" id="cps-reset-btn">⟲ Reset</button>
         <div style="display:flex; align-items:center; gap:8px;">
-          <label style="color:#8a7ab0;font-size:14px;">Duration (s):</label>
-          <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:6px;background:rgba(0,0,0,0.4);border:1px solid rgba(158,129,254,0.2);border-radius:8px;color:#f0eaff;text-align:center;">
+          <label style="color:#6a9ab0;font-size:14px;">Duration (s):</label>
+          <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:6px;background:rgba(0,0,0,0.3);border:1px solid rgba(74,168,216,0.12);border-radius:8px;color:#e0f0fa;text-align:center;">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PANEL: TIMER -->
+  <!-- ========== PANEL: TIMER ========== -->
   <div class="panel" id="panel-timer">
     <h2>⏱️ Timer · Stopwatch & Countdown</h2>
     <div class="timer-panel">
       <div class="timer-big" id="timer-display">00:00:00</div>
       <div class="timer-controls">
-        <button class="btn-typing" id="timer-start-btn">▶ Start</button>
-        <button class="btn-typing" id="timer-pause-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⏸ Pause</button>
-        <button class="btn-typing" id="timer-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
+        <button class="btn-action" id="timer-start-btn">▶ Start</button>
+        <button class="btn-action btn-secondary" id="timer-pause-btn">⏸ Pause</button>
+        <button class="btn-action btn-secondary" id="timer-reset-btn">⟲ Reset</button>
       </div>
       <div class="timer-input-group">
         <label>⏳ Countdown (seconds):</label>
         <input type="number" id="countdown-input" value="60" min="0" max="3600">
-        <button class="btn-typing" id="countdown-set-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);padding:8px 18px;font-size:14px;">Set</button>
-        <button class="btn-typing" id="stopwatch-mode-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);padding:8px 18px;font-size:14px;">Stopwatch</button>
+        <button class="btn-action btn-secondary" id="countdown-set-btn" style="padding:8px 18px;font-size:14px;">Set</button>
+        <button class="btn-action btn-secondary" id="stopwatch-mode-btn" style="padding:8px 18px;font-size:14px;">Stopwatch</button>
       </div>
-      <div id="timer-mode-label" style="color:#8a7ab0;font-size:14px;">Mode: Stopwatch</div>
+      <div id="timer-mode-label" style="color:#6a9ab0;font-size:14px;">Mode: Stopwatch</div>
     </div>
   </div>
 </div>
@@ -705,19 +739,19 @@
   (function() {
     "use strict";
 
-    // ----- INTRO OVERLAY (click only) -----
+    // ----- INTRO OVERLAY (auto‑fade after 2.5s) -----
     const intro = document.getElementById('intro-overlay');
-    intro.addEventListener('click', function() { this.classList.add('hidden'); });
+    setTimeout(() => intro.classList.add('hidden'), 2500);
 
     // ----- SIDEBAR TOGGLE -----
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    const dashBtn = document.getElementById('dashboard-toggle-btn');
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
     const closeBtn = document.getElementById('sidebar-close-btn');
 
     function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
-    dashBtn.addEventListener('click', openSidebar);
+    toggleBtn.addEventListener('click', openSidebar);
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
@@ -735,50 +769,6 @@
       });
     });
 
-    // ----- GOOGLE SIGN-IN (mock) -----
-    const signinBtn = document.getElementById('signin-btn');
-    const userDisplay = document.getElementById('user-display');
-    const userName = document.getElementById('user-name');
-    const userAvatar = document.getElementById('user-avatar');
-
-    function loadUser() {
-      const user = JSON.parse(localStorage.getItem('zero_forge_user') || 'null');
-      if (user) {
-        userDisplay.style.display = 'inline-flex';
-        userName.textContent = user.name || 'User';
-        userAvatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'U';
-        signinBtn.textContent = '👤 Logout';
-      } else {
-        userDisplay.style.display = 'none';
-        signinBtn.textContent = '🔑 Sign in with Google';
-      }
-    }
-
-    function mockSignIn() {
-      const name = prompt('Enter your name (mock Google sign-in):', 'Urban');
-      if (name && name.trim()) {
-        const user = { name: name.trim(), avatar: name.trim().charAt(0).toUpperCase() };
-        localStorage.setItem('zero_forge_user', JSON.stringify(user));
-        loadUser();
-      }
-    }
-
-    function signOut() {
-      localStorage.removeItem('zero_forge_user');
-      loadUser();
-    }
-
-    signinBtn.addEventListener('click', function() {
-      const user = JSON.parse(localStorage.getItem('zero_forge_user') || 'null');
-      if (user) {
-        if (confirm('Logout?')) signOut();
-      } else {
-        mockSignIn();
-      }
-    });
-
-    loadUser();
-
     // ----- PROFILE STORAGE -----
     function loadProfile() {
       try {
@@ -789,15 +779,33 @@
     }
     function saveProfile(p) { localStorage.setItem('zero_forge_profile', JSON.stringify(p)); }
 
-    function updateProfileUI() {
+    function updateAllUI() {
       const p = loadProfile();
       const best = p.bestWpm || 0;
       const avg = p.accCount > 0 ? Math.round(p.accSum / p.accCount) : 0;
+      // sidebar
       document.getElementById('side-best-wpm').textContent = best || '—';
       document.getElementById('side-avg-acc').textContent = avg ? avg + '%' : '—';
       document.getElementById('side-tests').textContent = p.totalTests || 0;
       document.getElementById('side-clicks').textContent = p.totalClicks || 0;
+      // home
+      document.getElementById('home-best-wpm').textContent = best || '—';
+      document.getElementById('home-avg-acc').textContent = avg ? avg + '%' : '—';
+      document.getElementById('home-tests').textContent = p.totalTests || 0;
+      // dashboard
+      document.getElementById('dash-best-wpm').textContent = best || '—';
+      document.getElementById('dash-avg-acc').textContent = avg ? avg + '%' : '—';
+      document.getElementById('dash-tests').textContent = p.totalTests || 0;
+      document.getElementById('dash-clicks').textContent = p.totalClicks || 0;
     }
+
+    // home quick buttons
+    document.getElementById('home-typing-btn').addEventListener('click', function() {
+      document.querySelector('.nav-btn[data-panel="typing"]')?.click();
+    });
+    document.getElementById('home-cps-btn').addEventListener('click', function() {
+      document.querySelector('.nav-btn[data-panel="cps"]')?.click();
+    });
 
     // ----- WORD LIST -----
     const WORD_POOL = [
@@ -893,7 +901,7 @@
       profile.accSum += acc;
       profile.accCount += 1;
       saveProfile(profile);
-      updateProfileUI();
+      updateAllUI();
       wpmDisplay.textContent = wpm;
     }
 
@@ -1017,7 +1025,7 @@
       const profile = loadProfile();
       profile.totalClicks += cps.clicks;
       saveProfile(profile);
-      updateProfileUI();
+      updateAllUI();
       cpsBtn.textContent = '🖱️\nDone';
     }
 
@@ -1088,7 +1096,7 @@
         gain.connect(ctx.destination);
         osc.frequency.value = 880;
         osc.type = 'square';
-        gain.gain.value = 0.15;
+        gain.gain.value = 0.12;
         osc.start();
         setTimeout(() => { osc.stop(); ctx.close(); }, 500);
       } catch(e) { console.warn('Alarm not supported'); }
@@ -1193,6 +1201,8 @@
     // ----- NAVIGATION -----
     const navBtns = document.querySelectorAll('.nav-btn');
     const panels = {
+      home: document.getElementById('panel-home'),
+      dashboard: document.getElementById('panel-dashboard'),
       typing: document.getElementById('panel-typing'),
       cps: document.getElementById('panel-cps'),
       timer: document.getElementById('panel-timer')
@@ -1210,7 +1220,7 @@
     document.getElementById('side-reset-btn').addEventListener('click', function() {
       if (confirm('Reset all stats?')) {
         localStorage.removeItem('zero_forge_profile');
-        updateProfileUI();
+        updateAllUI();
         resetTyping();
         resetCps();
         resetTimer();
@@ -1221,7 +1231,7 @@
     resetTyping();
     resetCps();
     resetTimer();
-    updateProfileUI();
+    updateAllUI();
     document.getElementById('word-count-select').value = '25';
     document.getElementById('cps-duration').value = '5';
     timerModeLabel.textContent = 'Mode: Stopwatch';
