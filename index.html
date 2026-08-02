@@ -3,126 +3,266 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VYN · Typing Arena</title>
+  <title>ZeroForgeX · Typing Arena</title>
   <style>
-    /* ----- RESET & BASE ----- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    /* ----- ANIMATED GRADIENT BACKGROUND ----- */
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     body {
-      background: #0b0e14;
-      color: #e6edf3;
+      margin: 0;
       min-height: 100vh;
+      background: linear-gradient(-45deg, #0b0a14, #1a142b, #2d1b3d, #1a0f2a);
+      background-size: 400% 400%;
+      animation: gradientMove 15s ease infinite;
+      font-family: 'Segoe UI', system-ui, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-    }
-    .app {
-      width: 100%;
-      max-width: 1200px;
-      background: #0d1117;
-      border-radius: 24px;
-      padding: 28px 30px 40px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-      border: 1px solid #21262d;
+      color: #f0eaff;
     }
 
-    /* ----- HEADER / NAV ----- */
-    .nav {
+    /* ----- INTRO OVERLAY ----- */
+    #intro-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0b0a14;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 28px;
-      border-bottom: 1px solid #21262d;
-      padding-bottom: 12px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease;
+      cursor: pointer;
+      text-align: center;
+      backdrop-filter: blur(4px);
     }
-    .nav-btn {
+    #intro-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #intro-overlay h1 {
+      font-size: 4.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, rgb(214, 202, 254), rgb(158, 129, 254));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      letter-spacing: 4px;
+      text-shadow: 0 0 40px rgba(158,129,254,0.3);
+    }
+    #intro-overlay .sub {
+      font-size: 1.3rem;
+      color: #b8a6ff;
+      margin-top: 10px;
+      letter-spacing: 6px;
+    }
+    #intro-overlay .creator {
+      margin-top: 30px;
+      font-size: 1rem;
+      color: #8a7ab0;
+      border-top: 1px solid #3a2a5a;
+      padding-top: 18px;
+      width: 200px;
+    }
+    #intro-overlay .click-hint {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #6a5a8a;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+    /* ----- MAIN APP ----- */
+    .app {
+      width: 100%;
+      max-width: 1300px;
+      background: rgba(13, 11, 22, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 24px 28px 36px;
+      border: 1px solid rgba(158, 129, 254, 0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 80px rgba(158,129,254,0.05);
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    /* ----- HEADER WITH ZEROFORGEX & SIDEBAR TOGGLE ----- */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(158,129,254,0.2);
+      padding-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .app-header .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .app-header .brand h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgb(214, 202, 254), rgb(158, 129, 254));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+    .app-header .brand small {
+      color: #8a7ab0;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      -webkit-text-fill-color: #8a7ab0;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-actions .creator-tag {
+      color: #a088c0;
+      font-size: 0.85rem;
+      background: rgba(158,129,254,0.1);
+      padding: 4px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(158,129,254,0.2);
+    }
+
+    /* ----- SIDEBAR TOGGLE BUTTON (hamburger) ----- */
+    .sidebar-toggle {
       background: transparent;
       border: none;
-      color: #8b949e;
-      font-size: 16px;
+      color: #c8b8f0;
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0 8px;
+      transition: 0.2s;
+      line-height: 1;
+    }
+    .sidebar-toggle:hover {
+      color: #d8c8ff;
+      transform: scale(1.05);
+    }
+
+    /* ----- SIDEBAR (dashboard) ----- */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -360px;
+      width: 340px;
+      height: 100vh;
+      background: rgba(13, 11, 22, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(158,129,254,0.3);
+      padding: 28px 24px;
+      transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 1000;
+      overflow-y: auto;
+      box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+    }
+    .sidebar.open {
+      left: 0;
+    }
+    .sidebar-close {
+      background: transparent;
+      border: none;
+      color: #b8a6ff;
+      font-size: 28px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 20px;
+      transition: 0.2s;
+    }
+    .sidebar-close:hover { color: #d8c8ff; }
+    .sidebar h2 {
+      color: #d8c8ff;
+      font-weight: 400;
+      font-size: 1.5rem;
+      border-bottom: 1px solid rgba(158,129,254,0.15);
+      padding-bottom: 12px;
+      margin-top: 0;
+      clear: both;
+    }
+    .sidebar .stat-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      border: 1px solid rgba(158,129,254,0.08);
+    }
+    .sidebar .stat-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8a7ab0;
+    }
+    .sidebar .stat-card .value {
+      font-size: 1.8rem;
       font-weight: 600;
-      padding: 8px 18px;
+      color: #e0d4ff;
+    }
+    .sidebar .stat-card .value.accent { color: #b8a6ff; }
+    .sidebar .stat-card .value.green { color: #7ad0a0; }
+    .sidebar .reset-btn {
+      background: rgba(248,81,73,0.15);
+      border: 1px solid rgba(248,81,73,0.3);
+      color: #f85149;
+      padding: 6px 18px;
       border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+      margin-top: 12px;
+    }
+    .sidebar .reset-btn:hover {
+      background: #f85149;
+      color: #0d0b16;
+    }
+    .sidebar .quick-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .sidebar .quick-nav button {
+      background: rgba(158,129,254,0.08);
+      border: 1px solid rgba(158,129,254,0.15);
+      color: #c8b8f0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 1rem;
       cursor: pointer;
       transition: 0.2s;
     }
-    .nav-btn:hover {
-      color: #f0f6fc;
-      background: #1c2128;
-    }
-    .nav-btn.active {
-      color: #f0f6fc;
-      background: #2f81f7;
-      box-shadow: 0 0 12px rgba(47,129,247,0.3);
-    }
-    .nav-btn:focus-visible {
-      outline: 2px solid #2f81f7;
-      outline-offset: 2px;
+    .sidebar .quick-nav button:hover {
+      background: rgba(158,129,254,0.2);
+      border-color: rgba(158,129,254,0.4);
     }
 
-    /* ----- PANELS (show/hide) ----- */
-    .panel {
-      display: none;
-      animation: fade 0.3s ease;
+    /* ----- OVERLAY (click outside to close sidebar) ----- */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
     }
-    .panel.active {
-      display: block;
-    }
-    @keyframes fade {
-      0% { opacity: 0.3; transform: translateY(6px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ----- TYPOGRAPHY & COMMON ----- */
-    h2 {
-      font-weight: 500;
-      font-size: 24px;
-      margin-bottom: 16px;
-      letter-spacing: -0.3px;
-      color: #f0f6fc;
-    }
-    .stat-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px 40px;
-      margin: 18px 0 22px;
-      background: #161b22;
-      padding: 14px 22px;
-      border-radius: 14px;
-      border: 1px solid #30363d;
-    }
-    .stat-item {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .stat-label {
-      color: #8b949e;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-    .stat-value {
-      font-weight: 700;
-      font-size: 22px;
-      color: #f0f6fc;
-    }
-    .stat-value.accent {
-      color: #58a6ff;
-    }
-    .stat-value.green {
-      color: #3fb950;
-    }
-    .stat-value.orange {
-      color: #d29922;
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
     }
 
-    /* ----- BUTTON (from user) ----- */
+    /* ----- BUTTON (from user, purple adjusted) ----- */
     .btn-typing,
     .btn-typing:focus {
       font-size: 17px;
@@ -136,7 +276,7 @@
       cursor: pointer;
       transition: 0.2s;
       transition-timing-function: linear;
-      color: #0d1117;
+      color: #0d0b16;
       font-weight: 600;
     }
     .btn-typing:active {
@@ -144,13 +284,13 @@
       border-bottom: 2px solid rgb(50, 50, 50);
     }
     .btn-typing:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       transform: translate(0,0);
       border-bottom: 2px solid rgb(50,50,50);
       pointer-events: none;
     }
 
-    /* ----- DASHBOARD INPUT (from user) ----- */
+    /* ----- DASHBOARD INPUT (from user, kept for style) ----- */
     .input {
       display: flex;
       flex-direction: column;
@@ -213,75 +353,127 @@
       filter: blur(1.5px);
       transform: scale(0.95, 0.95);
     }
-    /* custom wrapper for dashboard items */
-    .dash-item {
+
+    /* ----- NAV TABS (purple accent) ----- */
+    .nav {
       display: flex;
-      align-items: center;
-      gap: 20px;
       flex-wrap: wrap;
-      margin: 10px 0;
+      gap: 6px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid rgba(158,129,254,0.15);
+      padding-bottom: 10px;
     }
-    .dash-item .input {
-      width: auto;
-      flex: 1;
-      min-width: 160px;
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: #8a7ab0;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .dash-item .value {
-      justify-content: space-between;
+    .nav-btn:hover {
+      color: #e0d4ff;
+      background: rgba(158,129,254,0.08);
+    }
+    .nav-btn.active {
+      color: #0d0b16;
+      background: linear-gradient(135deg, rgb(214, 202, 254), rgb(158, 129, 254));
+      box-shadow: 0 0 20px rgba(158,129,254,0.25);
     }
 
-    /* ----- TYPING TEST SPECIFICS ----- */
+    /* ----- PANELS ----- */
+    .panel {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+    .panel.active {
+      display: block;
+    }
+    @keyframes fade {
+      0% { opacity: 0.2; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-weight: 500;
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+      color: #e0d4ff;
+      letter-spacing: -0.3px;
+    }
+
+    .stat-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px 40px;
+      margin: 18px 0 22px;
+      background: rgba(255,255,255,0.03);
+      padding: 14px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(158,129,254,0.08);
+    }
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .stat-label {
+      color: #8a7ab0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .stat-value {
+      font-weight: 700;
+      font-size: 22px;
+      color: #e0d4ff;
+    }
+    .stat-value.accent { color: #b8a6ff; }
+    .stat-value.green { color: #7ad0a0; }
+    .stat-value.orange { color: #d4b07a; }
+
+    /* ----- TYPING SPECIFICS ----- */
     .words-container {
       font-size: 28px;
       line-height: 1.6;
       letter-spacing: 0.5px;
-      background: #161b22;
+      background: rgba(0,0,0,0.3);
       padding: 24px 28px;
       border-radius: 16px;
-      border: 1px solid #30363d;
+      border: 1px solid rgba(158,129,254,0.1);
       min-height: 120px;
       margin: 12px 0 18px;
       word-break: break-word;
-      color: #8b949e;
+      color: #8a7ab0;
       font-weight: 400;
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
     }
-    .words-container .correct {
-      color: #3fb950;
-    }
-    .words-container .incorrect {
-      color: #f85149;
-      background: rgba(248,81,73,0.15);
-      border-radius: 4px;
-    }
-    .words-container .current {
-      background: #2f81f7;
-      color: #0d1117;
-      border-radius: 4px;
-      padding: 0 2px;
-    }
-    .words-container .pending {
-      color: #f0f6fc;
-    }
+    .words-container .correct { color: #7ad0a0; }
+    .words-container .incorrect { color: #f85149; background: rgba(248,81,73,0.12); border-radius: 4px; }
+    .words-container .current { background: #b8a6ff; color: #0d0b16; border-radius: 4px; padding: 0 2px; }
+    .words-container .pending { color: #c8b8f0; }
 
     #typing-input {
       width: 100%;
       padding: 14px 18px;
       font-size: 20px;
       font-family: 'JetBrains Mono', monospace;
-      background: #0d1117;
-      border: 2px solid #30363d;
+      background: rgba(0,0,0,0.4);
+      border: 2px solid rgba(158,129,254,0.15);
       border-radius: 12px;
-      color: #f0f6fc;
+      color: #f0eaff;
       outline: none;
       transition: 0.2s;
     }
     #typing-input:focus {
-      border-color: #2f81f7;
-      box-shadow: 0 0 0 3px rgba(47,129,247,0.25);
+      border-color: #b8a6ff;
+      box-shadow: 0 0 0 3px rgba(158,129,254,0.15);
     }
     #typing-input:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
     }
     .typing-controls {
       display: flex;
@@ -295,10 +487,10 @@
       font-weight: 600;
       font-variant-numeric: tabular-nums;
       min-width: 80px;
-      color: #58a6ff;
+      color: #b8a6ff;
     }
 
-    /* ----- CPS TEST ----- */
+    /* ----- CPS ----- */
     .cps-area {
       display: flex;
       flex-direction: column;
@@ -312,11 +504,11 @@
       border-radius: 50%;
       font-size: 28px;
       font-weight: 700;
-      background: linear-gradient(145deg, #1c2128, #0d1117);
-      border: 3px solid #30363d;
-      color: #f0f6fc;
+      background: linear-gradient(145deg, #1a142b, #0d0b16);
+      border: 3px solid rgba(158,129,254,0.3);
+      color: #e0d4ff;
       cursor: pointer;
-      box-shadow: 0 8px 0 #161b22;
+      box-shadow: 0 8px 0 #100e1a;
       transition: 0.08s linear;
       user-select: none;
       display: flex;
@@ -326,12 +518,12 @@
     }
     .cps-btn:active {
       transform: scale(0.96);
-      box-shadow: 0 4px 0 #161b22;
+      box-shadow: 0 4px 0 #100e1a;
     }
     .cps-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       transform: scale(0.98);
-      box-shadow: 0 4px 0 #161b22;
+      box-shadow: 0 4px 0 #100e1a;
       pointer-events: none;
     }
     .cps-stats {
@@ -341,13 +533,13 @@
       justify-content: center;
     }
     .cps-stats .stat-item {
-      background: #161b22;
+      background: rgba(255,255,255,0.03);
       padding: 12px 28px;
       border-radius: 40px;
-      border: 1px solid #30363d;
+      border: 1px solid rgba(158,129,254,0.08);
     }
 
-    /* ----- TIMER (stopwatch/countdown) ----- */
+    /* ----- TIMER (stopwatch + countdown) ----- */
     .timer-panel {
       display: flex;
       flex-direction: column;
@@ -360,11 +552,11 @@
       font-weight: 300;
       font-variant-numeric: tabular-nums;
       letter-spacing: 4px;
-      background: #161b22;
+      background: rgba(0,0,0,0.3);
       padding: 16px 48px;
       border-radius: 30px;
-      border: 1px solid #30363d;
-      color: #f0f6fc;
+      border: 1px solid rgba(158,129,254,0.1);
+      color: #e0d4ff;
     }
     .timer-controls {
       display: flex;
@@ -379,61 +571,22 @@
       flex-wrap: wrap;
     }
     .timer-input-group label {
-      color: #8b949e;
+      color: #8a7ab0;
       font-size: 14px;
     }
     .timer-input-group input {
       width: 70px;
       padding: 6px 10px;
-      background: #0d1117;
-      border: 1px solid #30363d;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(158,129,254,0.15);
       border-radius: 8px;
-      color: #f0f6fc;
+      color: #f0eaff;
       font-size: 18px;
       text-align: center;
     }
     .timer-input-group input:focus {
-      border-color: #2f81f7;
+      border-color: #b8a6ff;
       outline: none;
-    }
-
-    /* ----- PROFILE ----- */
-    .profile-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px;
-      margin: 18px 0;
-    }
-    .profile-card {
-      background: #161b22;
-      padding: 18px 22px;
-      border-radius: 16px;
-      border: 1px solid #30363d;
-    }
-    .profile-card .label {
-      color: #8b949e;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .profile-card .number {
-      font-size: 32px;
-      font-weight: 600;
-      margin-top: 4px;
-    }
-    .reset-btn {
-      background: transparent;
-      border: 1px solid #f85149;
-      color: #f85149;
-      padding: 6px 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
-    }
-    .reset-btn:hover {
-      background: #f85149;
-      color: #0d1117;
     }
 
     /* ----- RESPONSIVE ----- */
@@ -443,6 +596,8 @@
       .stat-grid { gap: 12px; }
       .timer-big { font-size: 40px; padding: 12px 24px; }
       .cps-btn { width: 150px; height: 150px; font-size: 20px; }
+      .sidebar { width: 280px; left: -300px; }
+      #intro-overlay h1 { font-size: 2.8rem; }
     }
     @media (max-width: 500px) {
       .nav-btn { font-size: 14px; padding: 6px 12px; }
@@ -451,17 +606,71 @@
   </style>
 </head>
 <body>
-<div class="app" id="app">
 
-  <!-- NAVIGATION -->
+<!-- INTRO OVERLAY -->
+<div id="intro-overlay">
+  <h1>ZeroForgeX</h1>
+  <div class="sub">T Y P I N G · A R E N A</div>
+  <div class="creator">Creator : Urban</div>
+  <div class="click-hint">click anywhere to enter</div>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- SIDEBAR (DASHBOARD) -->
+<div class="sidebar" id="sidebar">
+  <button class="sidebar-close" id="sidebar-close-btn">✕</button>
+  <h2>⚡ Dashboard</h2>
+  <div class="stat-card">
+    <div class="label">Best WPM</div>
+    <div class="value accent" id="side-best-wpm">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Avg. Accuracy</div>
+    <div class="value green" id="side-avg-acc">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Tests Taken</div>
+    <div class="value" id="side-tests">0</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Total Clicks (CPS)</div>
+    <div class="value" id="side-clicks">0</div>
+  </div>
+  <button class="reset-btn" id="side-reset-btn">🗑 Reset All Stats</button>
+  <div class="quick-nav">
+    <button data-panel="typing">⌨️ Typing Test</button>
+    <button data-panel="cps">🖱️ CPS Test</button>
+    <button data-panel="timer">⏱️ Timer</button>
+  </div>
+  <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(158,129,254,0.1); color:#6a5a8a; font-size:0.75rem; text-align:center;">
+    ZeroForgeX v2 · Creator: Urban
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="brand">
+      <h1>ZeroForgeX</h1>
+      <small>⚡ typing arena</small>
+    </div>
+    <div class="header-actions">
+      <span class="creator-tag">Creator : Urban</span>
+      <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle dashboard">☰</button>
+    </div>
+  </div>
+
+  <!-- NAVIGATION TABS -->
   <div class="nav">
     <button class="nav-btn active" data-panel="typing">⌨️ Typing</button>
     <button class="nav-btn" data-panel="cps">🖱️ CPS</button>
     <button class="nav-btn" data-panel="timer">⏱️ Timer</button>
-    <button class="nav-btn" data-panel="profile">👤 Profile</button>
   </div>
 
-  <!-- ===== PANEL: TYPING TEST ===== -->
+  <!-- ===== PANEL: TYPING ===== -->
   <div class="panel active" id="panel-typing">
     <h2>⌨️ Typing Test</h2>
     <div class="stat-grid">
@@ -470,20 +679,17 @@
       <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="typing-timer">0s</span></div>
       <div class="stat-item"><span class="stat-label">Characters</span><span class="stat-value" id="char-display">0/0</span></div>
     </div>
-
     <div class="words-container" id="words-display">
       <span class="pending">Click "Start Test" to begin</span>
     </div>
-
     <input type="text" id="typing-input" placeholder="Type here..." disabled autofocus />
-
     <div class="typing-controls">
       <button class="btn-typing" id="typing-start-btn">▶ Start Test</button>
-      <button class="btn-typing" id="typing-reset-btn" style="background-image:linear-gradient(#f0f6fc,#c9d1d9);">⟲ Reset</button>
+      <button class="btn-typing" id="typing-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
       <div class="timer-display" id="typing-timer-large">00:00</div>
       <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-        <label style="color:#8b949e;font-size:14px;">Words:</label>
-        <select id="word-count-select" style="background:#0d1117;color:#f0f6fc;border:1px solid #30363d;border-radius:8px;padding:4px 8px;">
+        <label style="color:#8a7ab0;font-size:14px;">Words:</label>
+        <select id="word-count-select" style="background:rgba(0,0,0,0.4);color:#f0eaff;border:1px solid rgba(158,129,254,0.2);border-radius:8px;padding:4px 8px;">
           <option value="10">10</option>
           <option value="25" selected>25</option>
           <option value="50">50</option>
@@ -493,7 +699,7 @@
     </div>
   </div>
 
-  <!-- ===== PANEL: CPS TEST ===== -->
+  <!-- ===== PANEL: CPS ===== -->
   <div class="panel" id="panel-cps">
     <h2>🖱️ CPS (Clicks Per Second)</h2>
     <div class="cps-area">
@@ -505,57 +711,106 @@
       <button class="cps-btn" id="cps-click-btn">🖱️<br><span style="font-size:16px;font-weight:400;">Click me</span></button>
       <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
         <button class="btn-typing" id="cps-start-btn">▶ Start 5s Test</button>
-        <button class="btn-typing" id="cps-reset-btn" style="background-image:linear-gradient(#f0f6fc,#c9d1d9);">⟲ Reset</button>
+        <button class="btn-typing" id="cps-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
         <div style="display:flex; align-items:center; gap:8px;">
-          <label style="color:#8b949e;font-size:14px;">Duration (s):</label>
-          <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:6px;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#f0f6fc;text-align:center;">
+          <label style="color:#8a7ab0;font-size:14px;">Duration (s):</label>
+          <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:6px;background:rgba(0,0,0,0.4);border:1px solid rgba(158,129,254,0.2);border-radius:8px;color:#f0eaff;text-align:center;">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== PANEL: TIMER ===== -->
+  <!-- ===== PANEL: TIMER (stopwatch + countdown with alarm) ===== -->
   <div class="panel" id="panel-timer">
-    <h2>⏱️ Timer / Stopwatch</h2>
+    <h2>⏱️ Timer · Stopwatch & Countdown</h2>
     <div class="timer-panel">
       <div class="timer-big" id="timer-display">00:00:00</div>
       <div class="timer-controls">
         <button class="btn-typing" id="timer-start-btn">▶ Start</button>
-        <button class="btn-typing" id="timer-pause-btn" style="background-image:linear-gradient(#f0f6fc,#c9d1d9);">⏸ Pause</button>
-        <button class="btn-typing" id="timer-reset-btn" style="background-image:linear-gradient(#f0f6fc,#c9d1d9);">⟲ Reset</button>
+        <button class="btn-typing" id="timer-pause-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⏸ Pause</button>
+        <button class="btn-typing" id="timer-reset-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);">⟲ Reset</button>
       </div>
       <div class="timer-input-group">
-        <label>Countdown (seconds):</label>
+        <label>⏳ Countdown (seconds):</label>
         <input type="number" id="countdown-input" value="60" min="0" max="3600">
-        <button class="btn-typing" id="countdown-set-btn" style="background-image:linear-gradient(#f0f6fc,#c9d1d9);padding:8px 18px;font-size:14px;">Set</button>
+        <button class="btn-typing" id="countdown-set-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);padding:8px 18px;font-size:14px;">Set</button>
+        <button class="btn-typing" id="stopwatch-mode-btn" style="background-image:linear-gradient(#f0eaff,#c8b8f0);padding:8px 18px;font-size:14px;">Stopwatch</button>
       </div>
+      <div id="timer-mode-label" style="color:#8a7ab0;font-size:14px;">Mode: Stopwatch</div>
     </div>
   </div>
-
-  <!-- ===== PANEL: PROFILE ===== -->
-  <div class="panel" id="panel-profile">
-    <h2>👤 Profile</h2>
-    <div class="profile-stats">
-      <div class="profile-card"><div class="label">Best WPM</div><div class="number accent" id="profile-best-wpm">—</div></div>
-      <div class="profile-card"><div class="label">Avg. Accuracy</div><div class="number green" id="profile-avg-acc">—</div></div>
-      <div class="profile-card"><div class="label">Tests Taken</div><div class="number" id="profile-tests">0</div></div>
-      <div class="profile-card"><div class="label">Total Clicks (CPS)</div><div class="number" id="profile-total-clicks">0</div></div>
-    </div>
-    <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:8px;">
-      <button class="btn-typing" id="profile-reset-btn" style="background-image:linear-gradient(#f85149,#da3633);border-color:#b62324;">🗑 Reset All Stats</button>
-    </div>
-    <p style="color:#8b949e;font-size:14px;margin-top:18px;border-top:1px solid #21262d;padding-top:16px;">
-      Data saved locally in your browser (localStorage). No data sent anywhere.
-    </p>
-  </div>
-
 </div>
 
 <script>
   (function() {
     "use strict";
 
-    // ----- WORD LIST (common English) -----
+    // ----- INTRO OVERLAY -----
+    const intro = document.getElementById('intro-overlay');
+    intro.addEventListener('click', function() {
+      this.classList.add('hidden');
+    });
+    // auto-hide after 5s
+    setTimeout(() => intro.classList.add('hidden'), 5000);
+
+    // ----- SIDEBAR TOGGLE -----
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const toggleBtn = document.getElementById('sidebar-toggle-btn');
+    const closeBtn = document.getElementById('sidebar-close-btn');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    }
+    toggleBtn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // quick nav from sidebar
+    document.querySelectorAll('.quick-nav button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const panel = this.dataset.panel;
+        if (panel) {
+          // switch tab
+          document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+          document.querySelector(`.nav-btn[data-panel="${panel}"]`)?.classList.add('active');
+          document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+          document.getElementById(`panel-${panel}`)?.classList.add('active');
+        }
+        closeSidebar();
+      });
+    });
+
+    // ----- PROFILE STORAGE -----
+    function loadProfile() {
+      try {
+        const raw = localStorage.getItem('zero_forge_profile');
+        if (raw) return JSON.parse(raw);
+      } catch (_) {}
+      return { bestWpm: 0, totalTests: 0, totalClicks: 0, accSum: 0, accCount: 0 };
+    }
+    function saveProfile(p) {
+      localStorage.setItem('zero_forge_profile', JSON.stringify(p));
+    }
+    function updateProfileUI() {
+      const p = loadProfile();
+      document.getElementById('profile-best-wpm').textContent = p.bestWpm || '—';
+      document.getElementById('profile-avg-acc').textContent = p.accCount > 0 ? Math.round(p.accSum/p.accCount)+'%' : '—';
+      document.getElementById('profile-tests').textContent = p.totalTests;
+      document.getElementById('profile-total-clicks').textContent = p.totalClicks;
+      // sidebar
+      document.getElementById('side-best-wpm').textContent = p.bestWpm || '—';
+      document.getElementById('side-avg-acc').textContent = p.accCount > 0 ? Math.round(p.accSum/p.accCount)+'%' : '—';
+      document.getElementById('side-tests').textContent = p.totalTests;
+      document.getElementById('side-clicks').textContent = p.totalClicks;
+    }
+
+    // ----- WORD LIST -----
     const WORD_POOL = [
       "the","be","to","of","and","a","in","that","have","i","it","for","not","on","with","he","as","you","do","at",
       "this","but","his","by","from","they","we","say","her","she","or","an","will","my","one","all","would","there",
@@ -565,54 +820,14 @@
       "first","well","way","even","new","want","because","any","these","give","day","most","us","is","am","are","was",
       "were","been","being","have","has","had","do","does","did","will","would","could","should","may","might","must"
     ];
+    function shuffleArray(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+    function getWordList(n) { return shuffleArray([...WORD_POOL]).slice(0,n); }
 
-    // ----- UTILITY -----
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function getWordList(count) {
-      const shuffled = shuffleArray([...WORD_POOL]);
-      return shuffled.slice(0, count);
-    }
-
-    // ----- STORAGE (profile) -----
-    function loadProfile() {
-      try {
-        const raw = localStorage.getItem('vyn_typing_profile');
-        if (raw) return JSON.parse(raw);
-      } catch (_) {}
-      return { bestWpm: 0, totalTests: 0, totalClicks: 0, accSum: 0, accCount: 0 };
-    }
-    function saveProfile(profile) {
-      localStorage.setItem('vyn_typing_profile', JSON.stringify(profile));
-    }
-    function updateProfileUI() {
-      const p = loadProfile();
-      document.getElementById('profile-best-wpm').textContent = p.bestWpm || '—';
-      const avg = p.accCount > 0 ? Math.round(p.accSum / p.accCount) : 0;
-      document.getElementById('profile-avg-acc').textContent = avg ? avg + '%' : '—';
-      document.getElementById('profile-tests').textContent = p.totalTests;
-      document.getElementById('profile-total-clicks').textContent = p.totalClicks;
-    }
-
-    // ----- TYPING TEST -----
+    // ----- TYPING TEST (unchanged logic, updated UI references) -----
     const typing = {
-      words: [],
-      currentIndex: 0,
-      typedChars: [],
-      startTime: null,
-      timerInterval: null,
-      isActive: false,
-      isFinished: false,
-      wordCount: 25,
-      elapsedSeconds: 0,
+      words: [], currentIndex: 0, typedChars: [], startTime: null, timerInterval: null,
+      isActive: false, isFinished: false, wordCount: 25, elapsedSeconds: 0
     };
-
     const wordsDisplay = document.getElementById('words-display');
     const typingInput = document.getElementById('typing-input');
     const wpmDisplay = document.getElementById('wpm-display');
@@ -621,50 +836,6 @@
     const typingTimerLarge = document.getElementById('typing-timer-large');
     const charDisplay = document.getElementById('char-display');
 
-    function renderWords() {
-      const { words, currentIndex } = typing;
-      if (!words.length) {
-        wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
-        return;
-      }
-      let html = '';
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        if (i < currentIndex) {
-          // Already typed – we need to compare with typed chars? We'll handle via separate logic.
-          // We'll just display words as pending; correctness is shown per character in input.
-          // Instead, we'll do a simpler approach: show all words, color based on per-character matching.
-          // But for simplicity, we'll just show the words and let the input handle correctness.
-          // Better: we'll show a static display and update after each char.
-          // We'll re-render on each keystroke.
-        }
-      }
-      // We'll implement a per-character highlight later.
-      // For now, we'll use a simpler method: show the words and the current word highlighted.
-      let output = '';
-      for (let i = 0; i < words.length; i++) {
-        const w = words[i];
-        if (i === currentIndex) {
-          output += `<span class="current">${w}</span> `;
-        } else if (i < currentIndex) {
-          // Check if the word was typed correctly (we can track errors per word)
-          // We'll just color it green/red based on typedChars comparison later.
-          // For this implementation, we'll store typed words separately.
-          // Let's keep it simple: just show all words as pending, and rely on input.
-        } else {
-          output += `<span class="pending">${w}</span> `;
-        }
-      }
-      // Better: we'll generate a full display with per-character correctness.
-      // But due to time, we'll implement a simpler version: show the current word only.
-      // Actually, we'll show all words with current word highlighted.
-      // We'll store the typed text per word.
-      // For now, we'll rebuild the display each keystroke using a function.
-      // Let's rewrite renderWords to handle all.
-      // We'll use a separate function.
-    }
-
-    // We'll implement a more robust display update.
     function updateTypingDisplay() {
       const { words, currentIndex, typedChars } = typing;
       if (!words.length) {
@@ -672,49 +843,69 @@
         return;
       }
       let html = '';
-      let globalCharIndex = 0;
       for (let i = 0; i < words.length; i++) {
         const word = words[i];
         let wordHtml = '';
         for (let j = 0; j < word.length; j++) {
-          const char = word[j];
+          const ch = word[j];
           let cls = 'pending';
           if (i < currentIndex) {
-            // This word is already finished
-            // Check if typed correctly
-            const typedWord = typedChars[i] || '';
-            if (j < typedWord.length) {
-              cls = (typedWord[j] === char) ? 'correct' : 'incorrect';
-            } else {
-              cls = 'incorrect'; // missing chars
-            }
+            const typed = typedChars[i] || '';
+            cls = (j < typed.length && typed[j] === ch) ? 'correct' : 'incorrect';
           } else if (i === currentIndex) {
-            // current word - compare typed so far
-            const typedSoFar = typedChars[currentIndex] || '';
-            if (j < typedSoFar.length) {
-              cls = (typedSoFar[j] === char) ? 'correct' : 'incorrect';
-            } else if (j === typedSoFar.length) {
-              cls = 'current';
-            } else {
-              cls = 'pending';
-            }
-          } else {
-            cls = 'pending';
+            const typed = typedChars[i] || '';
+            if (j < typed.length) cls = (typed[j] === ch) ? 'correct' : 'incorrect';
+            else if (j === typed.length) cls = 'current';
+            else cls = 'pending';
           }
-          wordHtml += `<span class="${cls}">${char}</span>`;
+          wordHtml += `<span class="${cls}">${ch}</span>`;
         }
-        // add space after each word except last
         if (i < words.length - 1) wordHtml += ' ';
         html += wordHtml;
       }
       wordsDisplay.innerHTML = html;
-      // Update char count
       let totalTyped = 0;
-      for (let i = 0; i < typing.typedChars.length; i++) {
-        totalTyped += typing.typedChars[i].length;
-      }
-      const totalChars = words.join('').length + (words.length - 1); // spaces
+      for (let i = 0; i < typing.typedChars.length; i++) totalTyped += typing.typedChars[i].length;
+      const totalChars = words.join('').length + (words.length - 1);
       charDisplay.textContent = `${totalTyped}/${totalChars}`;
+    }
+
+    function updateAccuracy() {
+      let correct = 0, total = 0;
+      for (let i = 0; i < typing.words.length; i++) {
+        const word = typing.words[i];
+        const typed = typing.typedChars[i] || '';
+        for (let j = 0; j < word.length; j++) {
+          if (j < typed.length) { total++; if (typed[j] === word[j]) correct++; }
+          else total++;
+        }
+        if (typed.length > word.length) total += (typed.length - word.length);
+      }
+      const acc = total > 0 ? Math.round((correct/total)*100) : 100;
+      accDisplay.textContent = acc + '%';
+      return acc;
+    }
+
+    function finishTypingTest() {
+      if (typing.isFinished) return;
+      typing.isActive = false;
+      typing.isFinished = true;
+      typingInput.disabled = true;
+      if (typing.timerInterval) clearInterval(typing.timerInterval);
+      document.getElementById('typing-start-btn').disabled = false;
+      const elapsed = typing.elapsedSeconds;
+      const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
+      let wpm = 0;
+      if (elapsed > 0 && typedCount > 0) wpm = Math.round((typedCount/5)/(elapsed/60));
+      const acc = updateAccuracy();
+      const profile = loadProfile();
+      profile.totalTests += 1;
+      if (wpm > profile.bestWpm) profile.bestWpm = wpm;
+      profile.accSum += acc;
+      profile.accCount += 1;
+      saveProfile(profile);
+      updateProfileUI();
+      wpmDisplay.textContent = wpm;
     }
 
     function startTypingTest() {
@@ -732,191 +923,26 @@
       typingInput.value = '';
       typingInput.focus();
       document.getElementById('typing-start-btn').disabled = true;
-      // Start timer
       if (typing.timerInterval) clearInterval(typing.timerInterval);
       typing.startTime = Date.now();
       typing.timerInterval = setInterval(() => {
         if (!typing.isActive) return;
         const elapsed = (Date.now() - typing.startTime) / 1000;
         typing.elapsedSeconds = elapsed;
-        const mins = Math.floor(elapsed / 60);
-        const secs = Math.floor(elapsed % 60);
-        const timeStr = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-        typingTimerLarge.textContent = timeStr;
+        const mins = Math.floor(elapsed/60), secs = Math.floor(elapsed%60);
+        typingTimerLarge.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
         typingTimer.textContent = Math.floor(elapsed) + 's';
-        // Update WPM if we have typed chars
-        const typedCount = typing.typedChars.reduce((sum, w) => sum + w.length, 0);
+        const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
         if (typedCount > 0 && elapsed > 0) {
-          const minutes = elapsed / 60;
-          const wpm = Math.round((typedCount / 5) / minutes);
+          const wpm = Math.round((typedCount/5)/(elapsed/60));
           wpmDisplay.textContent = wpm;
         }
-        // Update accuracy
-        updateTypingAccuracy();
+        updateAccuracy();
       }, 100);
-      // Initial render
       typing.typedChars = [];
       updateTypingDisplay();
     }
 
-    function updateTypingAccuracy() {
-      let correct = 0, total = 0;
-      for (let i = 0; i < typing.words.length; i++) {
-        const word = typing.words[i];
-        const typed = typing.typedChars[i] || '';
-        for (let j = 0; j < word.length; j++) {
-          if (j < typed.length) {
-            total++;
-            if (typed[j] === word[j]) correct++;
-          } else {
-            // missing chars count as incorrect
-            total++;
-            // we count them as incorrect, but we might not want to count them if not typed yet?
-            // Only count if the word is completed? We'll count only typed chars.
-          }
-        }
-        // If typed has extra chars, count them as incorrect
-        if (typed.length > word.length) {
-          total += (typed.length - word.length);
-          // extra chars are incorrect
-        }
-      }
-      // Also count spaces? We'll ignore spaces for simplicity.
-      const acc = total > 0 ? Math.round((correct / total) * 100) : 100;
-      accDisplay.textContent = acc + '%';
-      // Also update profile? Not yet.
-    }
-
-    function finishTypingTest() {
-      if (typing.isFinished) return;
-      typing.isActive = false;
-      typing.isFinished = true;
-      typingInput.disabled = true;
-      if (typing.timerInterval) clearInterval(typing.timerInterval);
-      document.getElementById('typing-start-btn').disabled = false;
-      // Calculate final stats
-      const elapsed = typing.elapsedSeconds;
-      const typedCount = typing.typedChars.reduce((sum, w) => sum + w.length, 0);
-      let wpm = 0;
-      if (elapsed > 0 && typedCount > 0) {
-        const minutes = elapsed / 60;
-        wpm = Math.round((typedCount / 5) / minutes);
-      }
-      // accuracy
-      let correct = 0, total = 0;
-      for (let i = 0; i < typing.words.length; i++) {
-        const word = typing.words[i];
-        const typed = typing.typedChars[i] || '';
-        for (let j = 0; j < word.length; j++) {
-          if (j < typed.length) {
-            total++;
-            if (typed[j] === word[j]) correct++;
-          } else {
-            total++;
-          }
-        }
-        if (typed.length > word.length) {
-          total += (typed.length - word.length);
-        }
-      }
-      const acc = total > 0 ? Math.round((correct / total) * 100) : 100;
-      // Update profile
-      const profile = loadProfile();
-      profile.totalTests += 1;
-      if (wpm > profile.bestWpm) profile.bestWpm = wpm;
-      profile.accSum += acc;
-      profile.accCount += 1;
-      saveProfile(profile);
-      updateProfileUI();
-      // Show final stats in display
-      wpmDisplay.textContent = wpm;
-      accDisplay.textContent = acc + '%';
-      // disable input
-      typingInput.disabled = true;
-    }
-
-    // Input handler
-    typingInput.addEventListener('input', function(e) {
-      if (!typing.isActive || typing.isFinished) return;
-      const value = this.value;
-      // We need to split by space to get words.
-      // The typed text should match the expected words.
-      // We'll process word by word.
-      const typedWords = value.split(' ');
-      const currentWordIndex = typedWords.length - 1;
-      // Update typedChars array
-      for (let i = 0; i < typedWords.length; i++) {
-        if (i >= typing.words.length) break;
-        typing.typedChars[i] = typedWords[i];
-      }
-      // Check if the user typed a space after a word, that means they moved to next word
-      if (value.endsWith(' ') && typedWords.length <= typing.words.length) {
-        // The last word is empty, so the previous word is complete
-        const lastIndex = typedWords.length - 2;
-        if (lastIndex >= 0 && lastIndex < typing.words.length) {
-          // Check if the word is correct? We'll just move on.
-          // We'll set current index to the next word.
-          typing.currentIndex = typedWords.length - 1; // because array index of the next word
-          // But if we just typed a space, the typedWords array has an empty string at the end.
-          // So we need to adjust.
-          // Actually, after typing a space, the split gives an empty string at the end.
-          // So we move currentIndex to the number of words typed.
-          const typedWordCount = typedWords.length - 1; // because last is empty
-          if (typedWordCount < typing.words.length) {
-            typing.currentIndex = typedWordCount;
-            // Ensure typedChars for the new current word exists
-            if (!typing.typedChars[typing.currentIndex]) {
-              typing.typedChars[typing.currentIndex] = '';
-            }
-          }
-        }
-      } else {
-        // No trailing space, current index is the last typed word index
-        const typedCount = typedWords.length;
-        if (typedCount <= typing.words.length) {
-          typing.currentIndex = typedCount - 1;
-          if (typing.currentIndex < 0) typing.currentIndex = 0;
-        }
-      }
-      // Check if all words are complete
-      const totalWords = typing.words.length;
-      const typedWordCount = typing.typedChars.length;
-      // Check if the last word is complete (has length equal to expected word length and no trailing space)
-      // We'll consider test finished when the user has typed the exact last word and pressed space or the input matches exactly.
-      // Simpler: when the number of typed words (non-empty) equals total words and the last word is complete.
-      const nonEmptyTyped = typing.typedChars.filter(w => w !== undefined).length;
-      if (nonEmptyTyped === totalWords) {
-        // Check if the last word is correct length
-        const lastWord = typing.typedChars[totalWords-1] || '';
-        const expected = typing.words[totalWords-1];
-        if (lastWord.length === expected.length) {
-          // The test is complete if the input has no extra characters after the last word?
-          // We'll check if the last character is a space? Actually if we ended with space, we would have moved on.
-          // So if we have exactly the correct number of words and the last word is fully typed, finish.
-          // But we also need to ensure the user didn't type extra spaces.
-          // We'll finish when the input value matches the expected string (words joined by spaces) exactly.
-          const expectedFull = typing.words.join(' ');
-          if (value === expectedFull) {
-            finishTypingTest();
-          }
-        }
-      }
-      // Update display
-      updateTypingDisplay();
-      // Update WPM in real time
-      const elapsed = (Date.now() - typing.startTime) / 1000;
-      if (elapsed > 0) {
-        const typedCount = typing.typedChars.reduce((sum, w) => sum + (w ? w.length : 0), 0);
-        if (typedCount > 0) {
-          const minutes = elapsed / 60;
-          const wpm = Math.round((typedCount / 5) / minutes);
-          wpmDisplay.textContent = wpm;
-        }
-      }
-      updateTypingAccuracy();
-    });
-
-    // Reset typing
     function resetTyping() {
       if (typing.timerInterval) clearInterval(typing.timerInterval);
       typing.isActive = false;
@@ -937,17 +963,49 @@
       wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
     }
 
+    typingInput.addEventListener('input', function(e) {
+      if (!typing.isActive || typing.isFinished) return;
+      const value = this.value;
+      const typedWords = value.split(' ');
+      for (let i = 0; i < typedWords.length; i++) {
+        if (i >= typing.words.length) break;
+        typing.typedChars[i] = typedWords[i];
+      }
+      if (value.endsWith(' ') && typedWords.length <= typing.words.length) {
+        const idx = typedWords.length - 2;
+        if (idx >= 0 && idx < typing.words.length) {
+          typing.currentIndex = typedWords.length - 1;
+        }
+      } else {
+        const count = typedWords.length;
+        if (count <= typing.words.length) typing.currentIndex = count - 1;
+        if (typing.currentIndex < 0) typing.currentIndex = 0;
+      }
+      const nonEmpty = typing.typedChars.filter(w => w !== undefined).length;
+      if (nonEmpty === typing.words.length) {
+        const last = typing.typedChars[typing.words.length-1] || '';
+        if (last.length === typing.words[typing.words.length-1].length) {
+          const expected = typing.words.join(' ');
+          if (value === expected) finishTypingTest();
+        }
+      }
+      updateTypingDisplay();
+      const elapsed = (Date.now() - typing.startTime) / 1000;
+      if (elapsed > 0) {
+        const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
+        if (typedCount > 0) {
+          const wpm = Math.round((typedCount/5)/(elapsed/60));
+          wpmDisplay.textContent = wpm;
+        }
+      }
+      updateAccuracy();
+    });
+
     document.getElementById('typing-start-btn').addEventListener('click', startTypingTest);
     document.getElementById('typing-reset-btn').addEventListener('click', resetTyping);
 
     // ----- CPS TEST -----
-    const cps = {
-      isActive: false,
-      clicks: 0,
-      startTime: null,
-      duration: 5,
-      timerInterval: null,
-    };
+    const cps = { isActive: false, clicks: 0, startTime: null, duration: 5, timerInterval: null };
     const cpsBtn = document.getElementById('cps-click-btn');
     const cpsValue = document.getElementById('cps-value');
     const clicksValue = document.getElementById('clicks-value');
@@ -955,39 +1013,9 @@
 
     function updateCpsUI() {
       clicksValue.textContent = cps.clicks;
-      const elapsed = cps.isActive ? (Date.now() - cps.startTime) / 1000 : 0;
+      const elapsed = cps.isActive ? (Date.now() - cps.startTime)/1000 : 0;
       cpsTime.textContent = elapsed.toFixed(1) + 's';
-      if (elapsed > 0) {
-        const cps = cps.clicks / elapsed;
-        cpsValue.textContent = cps.toFixed(2);
-      } else {
-        cpsValue.textContent = '0.00';
-      }
-    }
-
-    function startCpsTest() {
-      if (cps.isActive) return;
-      const duration = parseInt(document.getElementById('cps-duration').value, 10) || 5;
-      if (duration < 1) return;
-      cps.duration = duration;
-      cps.isActive = true;
-      cps.clicks = 0;
-      cps.startTime = Date.now();
-      cpsBtn.disabled = false;
-      cpsBtn.textContent = '🖱️\nClick!';
-      document.getElementById('cps-start-btn').disabled = true;
-      updateCpsUI();
-      // Auto-stop after duration
-      if (cps.timerInterval) clearInterval(cps.timerInterval);
-      cps.timerInterval = setInterval(() => {
-        if (!cps.isActive) return;
-        const elapsed = (Date.now() - cps.startTime) / 1000;
-        if (elapsed >= cps.duration) {
-          stopCpsTest();
-        } else {
-          updateCpsUI();
-        }
-      }, 50);
+      cpsValue.textContent = elapsed > 0 ? (cps.clicks/elapsed).toFixed(2) : '0.00';
     }
 
     function stopCpsTest() {
@@ -997,12 +1025,32 @@
       clearInterval(cps.timerInterval);
       document.getElementById('cps-start-btn').disabled = false;
       updateCpsUI();
-      // Save total clicks to profile
       const profile = loadProfile();
       profile.totalClicks += cps.clicks;
       saveProfile(profile);
       updateProfileUI();
       cpsBtn.textContent = '🖱️\nDone';
+    }
+
+    function startCpsTest() {
+      if (cps.isActive) return;
+      const dur = parseInt(document.getElementById('cps-duration').value, 10) || 5;
+      if (dur < 1) return;
+      cps.duration = dur;
+      cps.isActive = true;
+      cps.clicks = 0;
+      cps.startTime = Date.now();
+      cpsBtn.disabled = false;
+      cpsBtn.textContent = '🖱️\nClick!';
+      document.getElementById('cps-start-btn').disabled = true;
+      updateCpsUI();
+      if (cps.timerInterval) clearInterval(cps.timerInterval);
+      cps.timerInterval = setInterval(() => {
+        if (!cps.isActive) return;
+        const elapsed = (Date.now() - cps.startTime)/1000;
+        if (elapsed >= cps.duration) stopCpsTest();
+        else updateCpsUI();
+      }, 50);
     }
 
     function resetCps() {
@@ -1019,57 +1067,80 @@
       cpsTime.textContent = '0.0s';
     }
 
-    cpsBtn.addEventListener('click', function(e) {
-      if (!cps.isActive) return;
-      cps.clicks++;
-      updateCpsUI();
-    });
-
+    cpsBtn.addEventListener('click', function() { if (cps.isActive) { cps.clicks++; updateCpsUI(); } });
     document.getElementById('cps-start-btn').addEventListener('click', startCpsTest);
     document.getElementById('cps-reset-btn').addEventListener('click', resetCps);
 
-    // ----- TIMER (stopwatch + countdown) -----
+    // ----- TIMER (stopwatch & countdown with ALARM) -----
     const timer = {
-      mode: 'stopwatch', // 'stopwatch' or 'countdown'
+      mode: 'stopwatch', // or 'countdown'
       running: false,
-      elapsed: 0, // seconds
+      elapsed: 0,
       interval: null,
       countdownTarget: 60,
+      alarmTriggered: false
     };
     const timerDisplay = document.getElementById('timer-display');
+    const timerModeLabel = document.getElementById('timer-mode-label');
+
     function formatTime(sec) {
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = Math.floor(sec % 60);
+      const h = Math.floor(sec/3600);
+      const m = Math.floor((sec%3600)/60);
+      const s = Math.floor(sec%60);
       return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
+
+    function playAlarm() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        osc.type = 'square';
+        gain.gain.value = 0.15;
+        osc.start();
+        setTimeout(() => { osc.stop(); ctx.close(); }, 500);
+      } catch(e) { console.warn('Alarm not supported'); }
+    }
+
     function updateTimerDisplay() {
       let displaySec = timer.elapsed;
       if (timer.mode === 'countdown') {
         displaySec = Math.max(0, timer.countdownTarget - timer.elapsed);
+        if (displaySec === 0 && timer.running && !timer.alarmTriggered) {
+          timer.alarmTriggered = true;
+          playAlarm();
+        }
       }
       timerDisplay.textContent = formatTime(displaySec);
     }
+
     function timerTick() {
       timer.elapsed += 0.1;
       if (timer.mode === 'countdown') {
         if (timer.elapsed >= timer.countdownTarget) {
           timer.elapsed = timer.countdownTarget;
-          updateTimerDisplay();
-          clearInterval(timer.interval);
           timer.running = false;
+          clearInterval(timer.interval);
           document.getElementById('timer-start-btn').disabled = false;
+          updateTimerDisplay();
+          if (!timer.alarmTriggered) {
+            timer.alarmTriggered = true;
+            playAlarm();
+          }
           return;
         }
       }
       updateTimerDisplay();
     }
+
     function startTimer() {
       if (timer.running) return;
       timer.running = true;
-      timer.elapsed = 0;
+      timer.alarmTriggered = false;
       if (timer.mode === 'countdown') {
-        // set countdown target from input
         const val = parseInt(document.getElementById('countdown-input').value, 10);
         if (val > 0) timer.countdownTarget = val;
         else timer.countdownTarget = 60;
@@ -1082,16 +1153,19 @@
       timer.interval = setInterval(timerTick, 100);
       document.getElementById('timer-start-btn').disabled = true;
     }
+
     function pauseTimer() {
       if (!timer.running) return;
       timer.running = false;
       clearInterval(timer.interval);
       document.getElementById('timer-start-btn').disabled = false;
     }
+
     function resetTimer() {
       clearInterval(timer.interval);
       timer.running = false;
       timer.elapsed = 0;
+      timer.alarmTriggered = false;
       if (timer.mode === 'countdown') {
         const val = parseInt(document.getElementById('countdown-input').value, 10);
         if (val > 0) timer.countdownTarget = val;
@@ -1100,114 +1174,58 @@
       updateTimerDisplay();
       document.getElementById('timer-start-btn').disabled = false;
     }
+
     function setCountdown() {
       const val = parseInt(document.getElementById('countdown-input').value, 10);
       if (val > 0) {
+        timer.mode = 'countdown';
         timer.countdownTarget = val;
-        if (!timer.running && timer.mode === 'countdown') {
-          timer.elapsed = 0;
-          updateTimerDisplay();
-        }
-      }
+        timer.elapsed = 0;
+        timer.alarmTriggered = false;
+        resetTimer();
+        timerModeLabel.textContent = 'Mode: Countdown ('+val+'s)';
+      } else alert('Enter a positive number.');
+    }
+
+    function setStopwatch() {
+      timer.mode = 'stopwatch';
+      timer.elapsed = 0;
+      timer.alarmTriggered = false;
+      resetTimer();
+      timerModeLabel.textContent = 'Mode: Stopwatch';
     }
 
     document.getElementById('timer-start-btn').addEventListener('click', startTimer);
     document.getElementById('timer-pause-btn').addEventListener('click', pauseTimer);
     document.getElementById('timer-reset-btn').addEventListener('click', resetTimer);
-    document.getElementById('countdown-set-btn').addEventListener('click', function() {
-      timer.mode = 'countdown';
-      resetTimer();
-    });
-    // Also allow stopwatch mode by clicking start without setting countdown
-    // We'll default to stopwatch. If user sets countdown, mode changes.
-    // We'll add a toggle? For simplicity, we'll have two modes: default is stopwatch.
-    // We'll use a button to switch to countdown.
-    // We'll add a small button: "Switch to Countdown" / "Switch to Stopwatch"
-    // But for now, we'll just use the set button to switch to countdown.
-    // And if user clicks start without setting, it's stopwatch.
-    // We'll add a label to indicate mode.
-    // I'll add a small indicator.
-    // Let's add a mode indicator in the timer panel.
-    const modeIndicator = document.createElement('div');
-    modeIndicator.style.cssText = 'color:#8b949e;font-size:14px;margin-top:4px;';
-    modeIndicator.textContent = 'Mode: Stopwatch (click Set to use countdown)';
-    document.querySelector('.timer-panel').appendChild(modeIndicator);
-
-    // Override start to check mode
-    const originalStart = startTimer;
-    startTimer = function() {
-      // if timer.mode === 'countdown', use countdown logic
-      // else stopwatch
-      if (timer.mode === 'countdown') {
-        // countdown
-        if (timer.running) return;
-        timer.running = true;
-        timer.elapsed = 0;
-        const val = parseInt(document.getElementById('countdown-input').value, 10);
-        if (val > 0) timer.countdownTarget = val;
-        else timer.countdownTarget = 60;
-        updateTimerDisplay();
-        clearInterval(timer.interval);
-        timer.interval = setInterval(timerTick, 100);
-        document.getElementById('timer-start-btn').disabled = true;
-      } else {
-        // stopwatch
-        if (timer.running) return;
-        timer.running = true;
-        timer.elapsed = 0;
-        updateTimerDisplay();
-        clearInterval(timer.interval);
-        timer.interval = setInterval(timerTick, 100);
-        document.getElementById('timer-start-btn').disabled = true;
-      }
-    };
-    // Update the event listener
-    document.getElementById('timer-start-btn').onclick = startTimer;
-
-    // Modify setCountdown to switch mode
-    const originalSet = setCountdown;
-    setCountdown = function() {
-      const val = parseInt(document.getElementById('countdown-input').value, 10);
-      if (val > 0) {
-        timer.mode = 'countdown';
-        timer.countdownTarget = val;
-        resetTimer();
-        modeIndicator.textContent = 'Mode: Countdown ('+val+'s) — click Start';
-      } else {
-        alert('Enter a positive number.');
-      }
-    };
-    document.getElementById('countdown-set-btn').onclick = setCountdown;
-
-    // Add a reset to stopwatch mode button?
-    // We'll add a hidden button: double-click on timer to reset mode? Simpler: add a small link.
-    const resetModeBtn = document.createElement('button');
-    resetModeBtn.textContent = 'Switch to Stopwatch';
-    resetModeBtn.style.cssText = 'background:transparent;border:1px solid #30363d;color:#8b949e;padding:4px 12px;border-radius:20px;cursor:pointer;font-size:12px;margin-left:10px;';
-    resetModeBtn.onclick = function() {
-      timer.mode = 'stopwatch';
-      resetTimer();
-      modeIndicator.textContent = 'Mode: Stopwatch';
-    };
-    document.querySelector('.timer-controls').appendChild(resetModeBtn);
+    document.getElementById('countdown-set-btn').addEventListener('click', setCountdown);
+    document.getElementById('stopwatch-mode-btn').addEventListener('click', setStopwatch);
 
     // ----- NAVIGATION -----
     const navBtns = document.querySelectorAll('.nav-btn');
     const panels = {
       typing: document.getElementById('panel-typing'),
       cps: document.getElementById('panel-cps'),
-      timer: document.getElementById('panel-timer'),
-      profile: document.getElementById('panel-profile'),
+      timer: document.getElementById('panel-timer')
     };
     navBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const panel = this.dataset.panel;
         navBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        Object.keys(panels).forEach(key => {
-          panels[key].classList.toggle('active', key === panel);
-        });
+        Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === panel));
       });
+    });
+
+    // ----- SIDEBAR RESET -----
+    document.getElementById('side-reset-btn').addEventListener('click', function() {
+      if (confirm('Reset all stats?')) {
+        localStorage.removeItem('zero_forge_profile');
+        updateProfileUI();
+        resetTyping();
+        resetCps();
+        resetTimer();
+      }
     });
 
     // ----- INIT -----
@@ -1215,17 +1233,12 @@
     resetCps();
     resetTimer();
     updateProfileUI();
-
-    // Set default word count
     document.getElementById('word-count-select').value = '25';
-
-    // Initialize CPS duration
     document.getElementById('cps-duration').value = '5';
-
-    // Auto-focus typing input on load
-    // But disabled initially
+    // set timer mode label
+    timerModeLabel.textContent = 'Mode: Stopwatch';
 
   })();
 </script>
 </body>
-</html>
+            </html>
