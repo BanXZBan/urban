@@ -1,1242 +1,1891 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZeroForgeX · Demo</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    /* ---- ANIMATED GRADIENT (blue-cyan-teal) ---- */
-    @keyframes gradientFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(-45deg, #08101a, #102a3a, #0a1e2e, #142c3c);
-      background-size: 400% 400%;
-      animation: gradientFlow 14s ease infinite;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      color: #e0f0fa;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZeroForge · Renewed</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ─── RESET ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #060e17;
+            color: #e8f4fc;
+            min-height: 100vh;
+            position: relative;
+        }
 
-    /* ---- INTRO OVERLAY (auto‑fade) ---- */
-    #intro-overlay {
-      position: fixed;
-      inset: 0;
-      background: #0a121c;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 1s ease;
-      text-align: center;
-      backdrop-filter: blur(6px);
-      pointer-events: none; /* so clicks pass through after fade */
-    }
-    #intro-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    #intro-overlay h1 {
-      font-size: 4.8rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #7fc8f0, #4aa8d8, #2a8aba);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
-      letter-spacing: 4px;
-      text-shadow: 0 0 60px rgba(74, 168, 216, 0.25);
-    }
-    #intro-overlay .sub {
-      font-size: 1.4rem;
-      color: #80b8d8;
-      margin-top: 6px;
-      letter-spacing: 6px;
-      -webkit-text-fill-color: #80b8d8;
-    }
-    #intro-overlay .loader {
-      margin-top: 40px;
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(74, 168, 216, 0.1);
-      border-top: 3px solid #4aa8d8;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* ─── ANIMATED GRADIENT BG ─── */
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 50% 0%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            75% {
+                background-position: 50% 100%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(-45deg, #04141e, #0a2a3a, #063040, #0c1e2a, #0a2a3a);
+            background-size: 600% 600%;
+            animation: gradientFlow 16s ease infinite;
+        }
 
-    /* ---- MAIN APP (semi‑transparent) ---- */
-    .app {
-      width: 100%;
-      max-width: 1300px;
-      background: rgba(8, 16, 26, 0.65);
-      backdrop-filter: blur(8px);
-      border-radius: 32px;
-      padding: 24px 28px 36px;
-      border: 1px solid rgba(74, 168, 216, 0.2);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 60px rgba(74,168,216,0.05);
-      position: relative;
-    }
+        /* ─── GLOW ORBS ─── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            top: -10%;
+            left: -5%;
+            background: radial-gradient(circle, #00d4ff33, #00ff8833);
+            animation-duration: 22s;
+        }
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -10%;
+            right: -5%;
+            background: radial-gradient(circle, #00ffc833, #00d4ff33);
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, #00ff8833, #00ffc833);
+            animation-duration: 25s;
+            animation-delay: -10s;
+        }
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(60px, -40px) scale(1.1);
+            }
+            66% {
+                transform: translate(-30px, 50px) scale(0.9);
+            }
+            100% {
+                transform: translate(40px, -20px) scale(1.05);
+            }
+        }
 
-    /* ---- HEADER ---- */
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(74, 168, 216, 0.15);
-      padding-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .app-header .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-    }
-    .app-header .brand h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #7fc8f0, #4aa8d8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
-      letter-spacing: 1px;
-    }
-    .app-header .brand .version {
-      color: #6a9ab0;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      background: rgba(74,168,216,0.1);
-      padding: 2px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(74,168,216,0.15);
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .sidebar-toggle {
-      background: transparent;
-      border: none;
-      color: #a0c8e0;
-      font-size: 28px;
-      cursor: pointer;
-      transition: 0.2s;
-      line-height: 1;
-    }
-    .sidebar-toggle:hover {
-      color: #c0e4f4;
-      transform: scale(1.05);
-    }
+        /* ─── PARTICLE CANVAS ─── */
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-    /* ---- SIDEBAR ---- */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -380px;
-      width: 350px;
-      height: 100vh;
-      background: rgba(8, 16, 26, 0.96);
-      backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(74, 168, 216, 0.25);
-      padding: 28px 24px;
-      transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-      z-index: 1000;
-      overflow-y: auto;
-      box-shadow: 4px 0 40px rgba(0,0,0,0.5);
-    }
-    .sidebar.open { left: 0; }
-    .sidebar-close {
-      background: transparent;
-      border: none;
-      color: #90b8d0;
-      font-size: 28px;
-      cursor: pointer;
-      float: right;
-      margin-bottom: 20px;
-      transition: 0.2s;
-    }
-    .sidebar-close:hover { color: #c0e4f4; }
-    .sidebar h2 {
-      color: #c0e4f4;
-      font-weight: 400;
-      font-size: 1.5rem;
-      border-bottom: 1px solid rgba(74,168,216,0.12);
-      padding-bottom: 12px;
-      margin-top: 0;
-      clear: both;
-    }
-    .sidebar .stat-card {
-      background: rgba(255,255,255,0.02);
-      border-radius: 14px;
-      padding: 14px 18px;
-      margin: 12px 0;
-      border: 1px solid rgba(74,168,216,0.06);
-    }
-    .sidebar .stat-card .label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #6a9ab0;
-    }
-    .sidebar .stat-card .value {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #d0ecf8;
-    }
-    .sidebar .stat-card .value.accent { color: #7fc8f0; }
-    .sidebar .stat-card .value.green { color: #6ac8a0; }
-    .sidebar .reset-btn {
-      background: rgba(248,81,73,0.12);
-      border: 1px solid rgba(248,81,73,0.2);
-      color: #f85149;
-      padding: 6px 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.2s;
-      margin-top: 12px;
-    }
-    .sidebar .reset-btn:hover {
-      background: #f85149;
-      color: #0a121c;
-    }
-    .sidebar .quick-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 20px 0;
-    }
-    .sidebar .quick-nav button {
-      background: rgba(74,168,216,0.06);
-      border: 1px solid rgba(74,168,216,0.1);
-      color: #b0d8ec;
-      padding: 10px 14px;
-      border-radius: 12px;
-      text-align: left;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .sidebar .quick-nav button:hover {
-      background: rgba(74,168,216,0.15);
-      border-color: rgba(74,168,216,0.25);
-    }
-    .sidebar .footer-credit {
-      margin-top: 30px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(74,168,216,0.08);
-      color: #4a7a90;
-      font-size: 0.8rem;
-      text-align: center;
-    }
-    .sidebar-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .sidebar-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+        /* ─── INTRO OVERLAY ─── */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: #060e17;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            text-align: center;
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+        }
+        #intro-overlay.hidden {
+            opacity: 0;
+            transform: scale(1.02);
+            pointer-events: none;
+        }
+        #intro-overlay .logo {
+            font-size: 5.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #00ffc8, #00ff88, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 4s ease infinite;
+            letter-spacing: 2px;
+            font-family: 'Inter', sans-serif;
+            text-shadow: 0 0 80px rgba(0, 212, 255, 0.15);
+        }
+        @keyframes gradShift {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        #intro-overlay .sub {
+            font-size: 1.2rem;
+            color: #7ab8d8;
+            letter-spacing: 8px;
+            margin-top: 8px;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+        #intro-overlay .tagline {
+            font-size: 0.95rem;
+            color: #4a8aa8;
+            margin-top: 16px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            font-weight: 300;
+        }
+        .intro-loader {
+            margin-top: 48px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .intro-loader .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: dotPulse 1.4s ease infinite;
+        }
+        .intro-loader .dot:nth-child(2) {
+            animation-delay: 0.2s;
+            background: #00ffc8;
+        }
+        .intro-loader .dot:nth-child(3) {
+            animation-delay: 0.4s;
+            background: #00ff88;
+        }
+        @keyframes dotPulse {
+            0%,
+            80%,
+            100% {
+                transform: scale(0.4);
+                opacity: 0.3;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-    /* ---- BUTTON (cyan version) ---- */
-    .btn-action,
-    .btn-action:focus {
-      font-size: 17px;
-      padding: 10px 25px;
-      border-radius: 0.7rem;
-      background-image: linear-gradient(#7fc8f0, #4aa8d8);
-      border: 2px solid #2a5a7a;
-      border-bottom: 5px solid #2a5a7a;
-      box-shadow: 0px 1px 6px 0px rgba(74,168,216,0.4);
-      transform: translate(0, -3px);
-      cursor: pointer;
-      transition: 0.2s;
-      transition-timing-function: linear;
-      color: #0a121c;
-      font-weight: 600;
-    }
-    .btn-action:active {
-      transform: translate(0, 0);
-      border-bottom: 2px solid #2a5a7a;
-    }
-    .btn-action:disabled {
-      opacity: 0.4;
-      transform: translate(0,0);
-      border-bottom: 2px solid #2a5a7a;
-      pointer-events: none;
-    }
-    .btn-secondary {
-      background-image: linear-gradient(#b0d8ec, #80b8d8);
-      border-color: #3a6a8a;
-    }
+        /* ─── MAIN APP ─── */
+        .app {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1320px;
+            background: rgba(8, 20, 32, 0.5);
+            backdrop-filter: blur(16px) saturate(1.2);
+            border-radius: 36px;
+            padding: 28px 32px 40px;
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 212, 255, 0.04);
+            animation: appFloat 8s ease-in-out infinite alternate;
+            transition: box-shadow 0.5s ease;
+        }
+        @keyframes appFloat {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 100px rgba(0, 212, 255, 0.04);
+            }
+            100% {
+                transform: translateY(-6px);
+                box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 120px rgba(0, 212, 255, 0.08);
+            }
+        }
+        .app:hover {
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7), 0 0 140px rgba(0, 212, 255, 0.06);
+        }
 
-    /* ---- NAV TABS ---- */
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 22px;
-      border-bottom: 1px solid rgba(74,168,216,0.12);
-      padding-bottom: 10px;
-    }
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: #6a9ab0;
-      font-size: 16px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .nav-btn:hover {
-      color: #c0e4f4;
-      background: rgba(74,168,216,0.06);
-    }
-    .nav-btn.active {
-      color: #0a121c;
-      background: linear-gradient(135deg, #7fc8f0, #4aa8d8);
-      box-shadow: 0 0 20px rgba(74,168,216,0.2);
-    }
+        /* ─── HEADER ─── */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+            padding-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .app-header .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
+        .app-header .brand h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #00ffc8, #00ff88);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 5s ease infinite;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .app-header .brand .version {
+            color: #4a8aa8;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            background: rgba(0, 212, 255, 0.08);
+            padding: 3px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            font-weight: 400;
+            backdrop-filter: blur(4px);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .sidebar-toggle {
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            color: #80c8e8;
+            font-size: 26px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 6px 14px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 20px rgba(0, 212, 255, 0.04);
+        }
+        .sidebar-toggle:hover {
+            color: #b0e4f8;
+            border-color: rgba(0, 212, 255, 0.25);
+            background: rgba(0, 212, 255, 0.12);
+            transform: scale(1.04);
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.08);
+        }
 
-    /* ---- PANELS ---- */
-    .panel {
-      display: none;
-      animation: fade 0.25s ease;
-    }
-    .panel.active { display: block; }
-    @keyframes fade {
-      0% { opacity: 0.2; transform: translateY(6px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    h2 {
-      font-weight: 500;
-      font-size: 1.6rem;
-      margin-bottom: 16px;
-      color: #c0e4f4;
-      letter-spacing: -0.3px;
-    }
-    .stat-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px 40px;
-      margin: 18px 0 22px;
-      background: rgba(255,255,255,0.02);
-      padding: 14px 22px;
-      border-radius: 14px;
-      border: 1px solid rgba(74,168,216,0.06);
-    }
-    .stat-item {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .stat-label {
-      color: #6a9ab0;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-    .stat-value {
-      font-weight: 700;
-      font-size: 22px;
-      color: #d0ecf8;
-    }
-    .stat-value.accent { color: #7fc8f0; }
-    .stat-value.green { color: #6ac8a0; }
-    .stat-value.orange { color: #e0b87a; }
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 370px;
+            height: 100vh;
+            background: rgba(6, 14, 23, 0.97);
+            backdrop-filter: blur(30px) saturate(1.4);
+            border-right: 1px solid rgba(0, 212, 255, 0.12);
+            padding: 32px 28px;
+            transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 8px 0 60px rgba(0, 0, 0, 0.6);
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-close {
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            color: #80c8e8;
+            font-size: 24px;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 24px;
+            transition: all 0.25s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-close:hover {
+            color: #b0e4f8;
+            border-color: rgba(0, 212, 255, 0.25);
+            background: rgba(0, 212, 255, 0.12);
+            transform: rotate(90deg);
+        }
+        .sidebar h2 {
+            color: #c0e8f8;
+            font-weight: 600;
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+            padding-bottom: 14px;
+            margin-top: 0;
+            clear: both;
+            letter-spacing: -0.3px;
+        }
+        .sidebar .stat-card {
+            background: rgba(0, 212, 255, 0.03);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border: 1px solid rgba(0, 212, 255, 0.05);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar .stat-card:hover {
+            border-color: rgba(0, 212, 255, 0.12);
+            background: rgba(0, 212, 255, 0.06);
+            transform: translateX(4px);
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.04);
+        }
+        .sidebar .stat-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #4a8aa8;
+            font-weight: 400;
+        }
+        .sidebar .stat-card .value {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #d8f0fc;
+            letter-spacing: -0.5px;
+        }
+        .sidebar .stat-card .value.accent {
+            color: #00d4ff;
+        }
+        .sidebar .stat-card .value.green {
+            color: #00ff88;
+        }
+        .sidebar .stat-card .value.teal {
+            color: #00ffc8;
+        }
+        .sidebar .reset-btn {
+            background: rgba(248, 81, 73, 0.08);
+            border: 1px solid rgba(248, 81, 73, 0.15);
+            color: #f85149;
+            padding: 8px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 14px;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar .reset-btn:hover {
+            background: #f85149;
+            color: #060e17;
+            border-color: #f85149;
+            transform: scale(1.02);
+            box-shadow: 0 4px 30px rgba(248, 81, 73, 0.2);
+        }
+        .sidebar .quick-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 22px 0;
+        }
+        .sidebar .quick-nav button {
+            background: rgba(0, 212, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.06);
+            color: #90c8e0;
+            padding: 12px 18px;
+            border-radius: 14px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 400;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .quick-nav button:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.15);
+            color: #c0e8f8;
+            transform: translateX(6px);
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.04);
+        }
+        .sidebar .quick-nav button .icon {
+            font-size: 1.2rem;
+        }
+        .sidebar .footer-credit {
+            margin-top: 32px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(0, 212, 255, 0.06);
+            color: #3a6a80;
+            font-size: 0.8rem;
+            text-align: center;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(4px);
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
 
-    /* ---- HOME & DASHBOARD ---- */
-    .home-welcome {
-      font-size: 1.2rem;
-      color: #90b8d0;
-      margin-bottom: 20px;
-    }
-    .home-welcome strong {
-      color: #7fc8f0;
-      font-weight: 600;
-    }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 18px;
-      margin: 18px 0;
-    }
-    .dashboard-grid .card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(74,168,216,0.06);
-      border-radius: 16px;
-      padding: 18px 20px;
-      text-align: center;
-    }
-    .dashboard-grid .card .num {
-      font-size: 2.6rem;
-      font-weight: 600;
-      color: #7fc8f0;
-    }
-    .dashboard-grid .card .num.green { color: #6ac8a0; }
-    .dashboard-grid .card .lbl {
-      font-size: 0.8rem;
-      color: #6a9ab0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 4px;
-    }
+        /* ─── BUTTONS ─── */
+        .btn-action {
+            font-size: 17px;
+            padding: 11px 28px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #00d4ff, #00bbdd);
+            border: none;
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            color: #060e17;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-action::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .btn-action:hover::after {
+            opacity: 1;
+        }
+        .btn-action:active {
+            transform: translateY(0px) scale(0.98);
+            box-shadow: 0 2px 20px rgba(0, 212, 255, 0.2);
+        }
+        .btn-action:disabled {
+            opacity: 0.4;
+            transform: translateY(0);
+            pointer-events: none;
+            filter: grayscale(0.3);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #1a3a4a, #0a2a3a);
+            color: #b0d8ec;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .btn-secondary:active {
+            transform: translateY(0px) scale(0.98);
+        }
 
-    /* ---- TYPING ---- */
-    .words-container {
-      font-size: 28px;
-      line-height: 1.6;
-      letter-spacing: 0.5px;
-      background: rgba(0,0,0,0.25);
-      padding: 24px 28px;
-      border-radius: 16px;
-      border: 1px solid rgba(74,168,216,0.08);
-      min-height: 120px;
-      margin: 12px 0 18px;
-      word-break: break-word;
-      color: #6a9ab0;
-      font-weight: 400;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    }
-    .words-container .correct { color: #6ac8a0; }
-    .words-container .incorrect { color: #f85149; background: rgba(248,81,73,0.08); border-radius: 4px; }
-    .words-container .current { background: #7fc8f0; color: #0a121c; border-radius: 4px; padding: 0 2px; }
-    .words-container .pending { color: #b0d8ec; }
+        /* ─── NAV TABS ─── */
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+            padding-bottom: 12px;
+        }
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #4a8aa8;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 9px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            letter-spacing: 0.2px;
+        }
+        .nav-btn:hover {
+            color: #a0d8f0;
+            background: rgba(0, 212, 255, 0.04);
+            transform: translateY(-1px);
+        }
+        .nav-btn.active {
+            color: #060e17;
+            background: linear-gradient(135deg, #00d4ff, #00ffc8);
+            box-shadow: 0 4px 30px rgba(0, 212, 255, 0.2);
+            font-weight: 600;
+        }
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            pointer-events: none;
+        }
 
-    #typing-input {
-      width: 100%;
-      padding: 14px 18px;
-      font-size: 20px;
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(0,0,0,0.3);
-      border: 2px solid rgba(74,168,216,0.12);
-      border-radius: 12px;
-      color: #e0f0fa;
-      outline: none;
-      transition: 0.2s;
-    }
-    #typing-input:focus {
-      border-color: #7fc8f0;
-      box-shadow: 0 0 0 3px rgba(74,168,216,0.12);
-    }
-    #typing-input:disabled { opacity: 0.5; }
-    .typing-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
-      margin: 16px 0 8px;
-    }
-    .timer-display {
-      font-size: 28px;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      min-width: 80px;
-      color: #7fc8f0;
-    }
+        /* ─── PANELS ─── */
+        .panel {
+            display: none;
+            animation: panelFade 0.4s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes panelFade {
+            0% {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        h2 {
+            font-weight: 600;
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+            color: #c8ecfc;
+            letter-spacing: -0.3px;
+        }
+        h2 .emoji {
+            margin-right: 6px;
+        }
 
-    /* ---- CPS ---- */
-    .cps-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      padding: 20px 0;
-    }
-    .cps-btn {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      font-size: 28px;
-      font-weight: 700;
-      background: linear-gradient(145deg, #102a3a, #08101a);
-      border: 3px solid rgba(74,168,216,0.25);
-      color: #d0ecf8;
-      cursor: pointer;
-      box-shadow: 0 8px 0 #0a1a26;
-      transition: 0.08s linear;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .cps-btn:active {
-      transform: scale(0.96);
-      box-shadow: 0 4px 0 #0a1a26;
-    }
-    .cps-btn:disabled {
-      opacity: 0.4;
-      transform: scale(0.98);
-      box-shadow: 0 4px 0 #0a1a26;
-      pointer-events: none;
-    }
-    .cps-stats {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .cps-stats .stat-item {
-      background: rgba(255,255,255,0.02);
-      padding: 12px 28px;
-      border-radius: 40px;
-      border: 1px solid rgba(74,168,216,0.06);
-    }
+        /* ─── STAT GRID ─── */
+        .stat-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 36px;
+            margin: 16px 0 22px;
+            background: rgba(0, 212, 255, 0.02);
+            padding: 16px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 212, 255, 0.05);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .stat-grid:hover {
+            border-color: rgba(0, 212, 255, 0.08);
+            background: rgba(0, 212, 255, 0.04);
+        }
+        .stat-item {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .stat-label {
+            color: #4a8aa8;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 400;
+        }
+        .stat-value {
+            font-weight: 700;
+            font-size: 22px;
+            color: #d8f0fc;
+            letter-spacing: -0.3px;
+        }
+        .stat-value.accent {
+            color: #00d4ff;
+        }
+        .stat-value.green {
+            color: #00ff88;
+        }
+        .stat-value.teal {
+            color: #00ffc8;
+        }
+        .stat-value.orange {
+            color: #f0b87a;
+        }
 
-    /* ---- TIMER ---- */
-    .timer-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
-      padding: 18px 0;
-    }
-    .timer-big {
-      font-size: 64px;
-      font-weight: 300;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 4px;
-      background: rgba(0,0,0,0.2);
-      padding: 16px 48px;
-      border-radius: 30px;
-      border: 1px solid rgba(74,168,216,0.08);
-      color: #d0ecf8;
-    }
-    .timer-controls {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .timer-input-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .timer-input-group label {
-      color: #6a9ab0;
-      font-size: 14px;
-    }
-    .timer-input-group input {
-      width: 70px;
-      padding: 6px 10px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(74,168,216,0.12);
-      border-radius: 8px;
-      color: #e0f0fa;
-      font-size: 18px;
-      text-align: center;
-    }
-    .timer-input-group input:focus {
-      border-color: #7fc8f0;
-      outline: none;
-    }
+        /* ─── HOME ─── */
+        .home-welcome {
+            font-size: 1.15rem;
+            color: #80b8d0;
+            margin-bottom: 18px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        .home-welcome strong {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+        .home-welcome .highlight {
+            color: #00ffc8;
+        }
+        .home-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
 
-    /* ---- RESPONSIVE ---- */
-    @media (max-width: 700px) {
-      .app { padding: 16px; }
-      .words-container { font-size: 20px; padding: 16px; }
-      .stat-grid { gap: 12px; }
-      .timer-big { font-size: 40px; padding: 12px 24px; }
-      .cps-btn { width: 150px; height: 150px; font-size: 20px; }
-      .sidebar { width: 280px; left: -300px; }
-      #intro-overlay h1 { font-size: 2.8rem; }
-    }
-    @media (max-width: 500px) {
-      .nav-btn { font-size: 14px; padding: 6px 12px; }
-      .stat-grid { flex-direction: column; gap: 6px; }
-    }
-  </style>
+        /* ─── DASHBOARD GRID ─── */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 20px;
+            margin: 18px 0;
+        }
+        .dashboard-grid .card {
+            background: rgba(0, 212, 255, 0.02);
+            border: 1px solid rgba(0, 212, 255, 0.05);
+            border-radius: 20px;
+            padding: 22px 20px;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard-grid .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.02), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .dashboard-grid .card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(0, 212, 255, 0.15);
+            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.3), 0 0 60px rgba(0, 212, 255, 0.04);
+        }
+        .dashboard-grid .card:hover::before {
+            opacity: 1;
+        }
+        .dashboard-grid .card .num {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #00d4ff;
+            letter-spacing: -1px;
+            position: relative;
+        }
+        .dashboard-grid .card .num.green {
+            color: #00ff88;
+        }
+        .dashboard-grid .card .num.teal {
+            color: #00ffc8;
+        }
+        .dashboard-grid .card .lbl {
+            font-size: 0.75rem;
+            color: #4a8aa8;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        /* ─── TYPING ─── */
+        .words-container {
+            font-size: 28px;
+            line-height: 1.7;
+            letter-spacing: 0.8px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 26px 32px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.06);
+            min-height: 130px;
+            margin: 12px 0 20px;
+            word-break: break-word;
+            color: #4a8aa8;
+            font-weight: 400;
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color 0.3s ease;
+            box-shadow: inset 0 2px 30px rgba(0, 0, 0, 0.1);
+        }
+        .words-container:focus-within {
+            border-color: rgba(0, 212, 255, 0.15);
+        }
+        .words-container .correct {
+            color: #00ff88;
+        }
+        .words-container .incorrect {
+            color: #f85149;
+            background: rgba(248, 81, 73, 0.08);
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+        .words-container .current {
+            background: linear-gradient(135deg, #00d4ff, #00ffc8);
+            color: #060e17;
+            border-radius: 4px;
+            padding: 0 4px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+            animation: currentPulse 1.2s ease infinite;
+        }
+        @keyframes currentPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+            }
+        }
+        .words-container .pending {
+            color: #6a9ab0;
+        }
+
+        #typing-input {
+            width: 100%;
+            padding: 16px 22px;
+            font-size: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(0, 212, 255, 0.08);
+            border-radius: 16px;
+            color: #e8f4fc;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        #typing-input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.06), inset 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        #typing-input:disabled {
+            opacity: 0.4;
+        }
+        .typing-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            margin: 18px 0 8px;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            min-width: 80px;
+            color: #00d4ff;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── CPS ─── */
+        .cps-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 20px 0;
+        }
+        .cps-btn {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(145deg, #0a1a2a, #060e17);
+            border: 2px solid rgba(0, 212, 255, 0.12);
+            color: #d0ecf8;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #040a10, 0 8px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.08s linear;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .cps-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+        .cps-btn:active {
+            transform: scale(0.94);
+            box-shadow: 0 4px 0 #040a10, 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        .cps-btn:disabled {
+            opacity: 0.4;
+            transform: scale(0.97);
+            box-shadow: 0 4px 0 #040a10;
+            pointer-events: none;
+        }
+        .cps-btn .sub {
+            font-size: 16px;
+            font-weight: 400;
+            color: #4a8aa8;
+            margin-top: 2px;
+        }
+        .cps-stats {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cps-stats .stat-item {
+            background: rgba(0, 212, 255, 0.02);
+            padding: 12px 30px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.05);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .cps-stats .stat-item:hover {
+            border-color: rgba(0, 212, 255, 0.1);
+            background: rgba(0, 212, 255, 0.04);
+        }
+
+        /* ─── TIMER ─── */
+        .timer-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 18px 0;
+        }
+        .timer-big {
+            font-size: 68px;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 6px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 20px 56px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.06);
+            color: #d8f0fc;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 30px rgba(0, 0, 0, 0.1);
+        }
+        .timer-big:hover {
+            border-color: rgba(0, 212, 255, 0.1);
+        }
+        .timer-controls {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .timer-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .timer-input-group label {
+            color: #4a8aa8;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        .timer-input-group input {
+            width: 72px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            border-radius: 12px;
+            color: #e8f4fc;
+            font-size: 18px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            transition: border-color 0.3s ease;
+        }
+        .timer-input-group input:focus {
+            border-color: #00d4ff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.06);
+        }
+        #timer-mode-label {
+            color: #4a8aa8;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            background: rgba(0, 212, 255, 0.04);
+            padding: 6px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.05);
+        }
+
+        /* ─── SELECT ─── */
+        select {
+            background: rgba(0, 0, 0, 0.25);
+            color: #e8f4fc;
+            border: 1px solid rgba(0, 212, 255, 0.08);
+            border-radius: 12px;
+            padding: 8px 14px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+        select:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.06);
+        }
+        select option {
+            background: #0a1a2a;
+            color: #e8f4fc;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 820px) {
+            .app {
+                padding: 20px;
+                border-radius: 28px;
+            }
+            .app-header .brand h1 {
+                font-size: 1.5rem;
+            }
+            .words-container {
+                font-size: 22px;
+                padding: 20px;
+            }
+            .stat-grid {
+                gap: 10px 20px;
+                padding: 14px 18px;
+            }
+            .timer-big {
+                font-size: 44px;
+                padding: 14px 32px;
+                letter-spacing: 4px;
+            }
+            .cps-btn {
+                width: 160px;
+                height: 160px;
+                font-size: 22px;
+            }
+            .sidebar {
+                width: 300px;
+                left: -320px;
+                padding: 24px 20px;
+            }
+            #intro-overlay .logo {
+                font-size: 3.6rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 14px;
+            }
+            .dashboard-grid .card .num {
+                font-size: 2.2rem;
+            }
+            .nav-btn {
+                font-size: 14px;
+                padding: 7px 16px;
+            }
+        }
+        @media (max-width: 500px) {
+            .app {
+                padding: 14px;
+                border-radius: 20px;
+            }
+            .app-header .brand h1 {
+                font-size: 1.2rem;
+            }
+            .app-header .brand .version {
+                font-size: 0.6rem;
+                padding: 2px 10px;
+            }
+            .nav-btn {
+                font-size: 12px;
+                padding: 5px 12px;
+            }
+            .stat-grid {
+                flex-direction: column;
+                gap: 6px;
+                padding: 12px 16px;
+            }
+            .stat-value {
+                font-size: 18px;
+            }
+            .words-container {
+                font-size: 18px;
+                padding: 14px 16px;
+                min-height: 90px;
+            }
+            #typing-input {
+                font-size: 17px;
+                padding: 12px 16px;
+            }
+            .timer-big {
+                font-size: 32px;
+                padding: 12px 20px;
+                letter-spacing: 2px;
+            }
+            .cps-btn {
+                width: 130px;
+                height: 130px;
+                font-size: 18px;
+            }
+            .cps-btn .sub {
+                font-size: 13px;
+            }
+            .sidebar {
+                width: 270px;
+                left: -290px;
+                padding: 18px 16px;
+            }
+            #intro-overlay .logo {
+                font-size: 2.6rem;
+            }
+            #intro-overlay .sub {
+                font-size: 0.9rem;
+                letter-spacing: 4px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .dashboard-grid .card {
+                padding: 14px 12px;
+            }
+            .dashboard-grid .card .num {
+                font-size: 1.8rem;
+            }
+            .home-welcome {
+                font-size: 1rem;
+            }
+            .btn-action {
+                font-size: 14px;
+                padding: 9px 20px;
+            }
+            .typing-controls {
+                gap: 10px;
+            }
+            .timer-display {
+                font-size: 22px;
+                min-width: 60px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- INTRO OVERLAY (auto‑fade) -->
-<div id="intro-overlay">
-  <h1>ZeroForgeDemo</h1>
-  <div class="sub">Demo version</div>
-  <div class="loader"></div>
-</div>
+    <!-- BACKGROUND GRADIENT -->
+    <div id="bg-canvas"></div>
 
-<!-- SIDEBAR OVERLAY -->
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <!-- GLOW ORBS -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <button class="sidebar-close" id="sidebar-close-btn">✕</button>
-  <h2>📊 Dashboard</h2>
-  <div class="stat-card">
-    <div class="label">Best WPM</div>
-    <div class="value accent" id="side-best-wpm">—</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">Avg. Accuracy</div>
-    <div class="value green" id="side-avg-acc">—</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">Tests Taken</div>
-    <div class="value" id="side-tests">0</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">Total Clicks (CPS)</div>
-    <div class="value" id="side-clicks">0</div>
-  </div>
-  <button class="reset-btn" id="side-reset-btn">🗑 Reset All Stats</button>
-  <div class="quick-nav">
-    <button data-panel="home">🏠 Home</button>
-    <button data-panel="dashboard">📊 Dashboard</button>
-    <button data-panel="typing">⌨️ Typing</button>
-    <button data-panel="cps">🖱️ CPS</button>
-    <button data-panel="timer">⏱️ Timer</button>
-  </div>
-  <div class="footer-credit">Creator : Urban</div>
-</div>
+    <!-- PARTICLE CANVAS -->
+    <canvas id="particle-canvas"></canvas>
 
-<!-- MAIN APP -->
-<div class="app" id="app">
-
-  <!-- HEADER -->
-  <div class="app-header">
-    <div class="brand">
-      <h1>ZeroForgeDemo</h1>
-      <span class="version">Demo version</span>
-    </div>
-    <div class="header-actions">
-      <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle sidebar">☰</button>
-    </div>
-  </div>
-
-  <!-- NAVIGATION TABS -->
-  <div class="nav">
-    <button class="nav-btn active" data-panel="home">🏠 Home</button>
-    <button class="nav-btn" data-panel="dashboard">📊 Dashboard</button>
-    <button class="nav-btn" data-panel="typing">⌨️ Typing</button>
-    <button class="nav-btn" data-panel="cps">🖱️ CPS</button>
-    <button class="nav-btn" data-panel="timer">⏱️ Timer</button>
-  </div>
-
-  <!-- ========== PANEL: HOME ========== -->
-  <div class="panel active" id="panel-home">
-    <h2>🏠 Welcome</h2>
-    <div class="home-welcome">
-      <strong>ZeroForgeDemo</strong> – a compact typing suite for WPM, CPS, and timers.<br />
-      All data stays in your browser. Choose a test from the tabs above.
-    </div>
-    <div class="stat-grid" style="border-color:rgba(74,168,216,0.1);">
-      <div class="stat-item"><span class="stat-label">Best WPM</span><span class="stat-value accent" id="home-best-wpm">—</span></div>
-      <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green" id="home-avg-acc">—</span></div>
-      <div class="stat-item"><span class="stat-label">Tests</span><span class="stat-value" id="home-tests">0</span></div>
-    </div>
-    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;">
-      <button class="btn-action" id="home-typing-btn">▶ Start Typing</button>
-      <button class="btn-action btn-secondary" id="home-cps-btn">🖱️ CPS Test</button>
-    </div>
-  </div>
-
-  <!-- ========== PANEL: DASHBOARD ========== -->
-  <div class="panel" id="panel-dashboard">
-    <h2>📊 Full Dashboard</h2>
-    <div class="dashboard-grid">
-      <div class="card"><div class="num" id="dash-best-wpm">—</div><div class="lbl">Best WPM</div></div>
-      <div class="card"><div class="num green" id="dash-avg-acc">—</div><div class="lbl">Avg Accuracy</div></div>
-      <div class="card"><div class="num" id="dash-tests">0</div><div class="lbl">Tests Taken</div></div>
-      <div class="card"><div class="num" id="dash-clicks">0</div><div class="lbl">Total Clicks</div></div>
-    </div>
-    <p style="color:#6a9ab0;font-size:0.9rem;">Stats are saved locally. Use the sidebar to reset.</p>
-  </div>
-
-  <!-- ========== PANEL: TYPING ========== -->
-  <div class="panel" id="panel-typing">
-    <h2>⌨️ Typing Test</h2>
-    <div class="stat-grid">
-      <div class="stat-item"><span class="stat-label">WPM</span><span class="stat-value accent" id="wpm-display">0</span></div>
-      <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green" id="acc-display">100%</span></div>
-      <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="typing-timer">0s</span></div>
-      <div class="stat-item"><span class="stat-label">Characters</span><span class="stat-value" id="char-display">0/0</span></div>
-    </div>
-    <div class="words-container" id="words-display">
-      <span class="pending">Click "Start Test" to begin</span>
-    </div>
-    <input type="text" id="typing-input" placeholder="Type here..." disabled autofocus />
-    <div class="typing-controls">
-      <button class="btn-action" id="typing-start-btn">▶ Start Test</button>
-      <button class="btn-action btn-secondary" id="typing-reset-btn">⟲ Reset</button>
-      <div class="timer-display" id="typing-timer-large">00:00</div>
-      <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
-        <label style="color:#6a9ab0;font-size:14px;">Words:</label>
-        <select id="word-count-select" style="background:rgba(0,0,0,0.3);color:#e0f0fa;border:1px solid rgba(74,168,216,0.15);border-radius:8px;padding:4px 8px;">
-          <option value="10">10</option>
-          <option value="25" selected>25</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== PANEL: CPS ========== -->
-  <div class="panel" id="panel-cps">
-    <h2>🖱️ CPS (Clicks Per Second)</h2>
-    <div class="cps-area">
-      <div class="cps-stats">
-        <div class="stat-item"><span class="stat-label">CPS</span><span class="stat-value accent" id="cps-value">0.00</span></div>
-        <div class="stat-item"><span class="stat-label">Clicks</span><span class="stat-value" id="clicks-value">0</span></div>
-        <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="cps-time">0.0s</span></div>
-      </div>
-      <button class="cps-btn" id="cps-click-btn">🖱️<br /><span style="font-size:16px;font-weight:400;">Click me</span></button>
-      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
-        <button class="btn-action" id="cps-start-btn">▶ Start 5s Test</button>
-        <button class="btn-action btn-secondary" id="cps-reset-btn">⟲ Reset</button>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <label style="color:#6a9ab0;font-size:14px;">Duration (s):</label>
-          <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:6px;background:rgba(0,0,0,0.3);border:1px solid rgba(74,168,216,0.12);border-radius:8px;color:#e0f0fa;text-align:center;">
+    <!-- INTRO OVERLAY -->
+    <div id="intro-overlay">
+        <div class="logo">ZeroForge</div>
+        <div class="sub">· renewed ·</div>
+        <div class="tagline">typing · cps · timer</div>
+        <div class="intro-loader">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- ========== PANEL: TIMER ========== -->
-  <div class="panel" id="panel-timer">
-    <h2>⏱️ Timer · Stopwatch & Countdown</h2>
-    <div class="timer-panel">
-      <div class="timer-big" id="timer-display">00:00:00</div>
-      <div class="timer-controls">
-        <button class="btn-action" id="timer-start-btn">▶ Start</button>
-        <button class="btn-action btn-secondary" id="timer-pause-btn">⏸ Pause</button>
-        <button class="btn-action btn-secondary" id="timer-reset-btn">⟲ Reset</button>
-      </div>
-      <div class="timer-input-group">
-        <label>⏳ Countdown (seconds):</label>
-        <input type="number" id="countdown-input" value="60" min="0" max="3600">
-        <button class="btn-action btn-secondary" id="countdown-set-btn" style="padding:8px 18px;font-size:14px;">Set</button>
-        <button class="btn-action btn-secondary" id="stopwatch-mode-btn" style="padding:8px 18px;font-size:14px;">Stopwatch</button>
-      </div>
-      <div id="timer-mode-label" style="color:#6a9ab0;font-size:14px;">Mode: Stopwatch</div>
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebar-close-btn">✕</button>
+        <h2>📊 Dashboard</h2>
+        <div class="stat-card">
+            <div class="label">Best WPM</div>
+            <div class="value accent" id="side-best-wpm">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Avg. Accuracy</div>
+            <div class="value green" id="side-avg-acc">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Tests Taken</div>
+            <div class="value teal" id="side-tests">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="label">Total Clicks</div>
+            <div class="value" id="side-clicks">0</div>
+        </div>
+        <button class="reset-btn" id="side-reset-btn">🗑 Reset All Stats</button>
+        <div class="quick-nav">
+            <button data-panel="home"><span class="icon">🏠</span> Home</button>
+            <button data-panel="dashboard"><span class="icon">📊</span> Dashboard</button>
+            <button data-panel="typing"><span class="icon">⌨️</span> Typing</button>
+            <button data-panel="cps"><span class="icon">🖱️</span> CPS</button>
+            <button data-panel="timer"><span class="icon">⏱️</span> Timer</button>
+        </div>
+        <div class="footer-credit">✦ Urban · 2026</div>
     </div>
-  </div>
-</div>
 
-<script>
-  (function() {
-    "use strict";
+    <!-- MAIN APP -->
+    <div class="app" id="app">
 
-    // ----- INTRO OVERLAY (auto‑fade after 2.5s) -----
-    const intro = document.getElementById('intro-overlay');
-    setTimeout(() => intro.classList.add('hidden'), 2500);
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="brand">
+                <h1>ZeroForge</h1>
+                <span class="version">renewed</span>
+            </div>
+            <div class="header-actions">
+                <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle sidebar">☰</button>
+            </div>
+        </div>
 
-    // ----- SIDEBAR TOGGLE -----
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    const toggleBtn = document.getElementById('sidebar-toggle-btn');
-    const closeBtn = document.getElementById('sidebar-close-btn');
+        <!-- NAV TABS -->
+        <div class="nav">
+            <button class="nav-btn active" data-panel="home">🏠 Home</button>
+            <button class="nav-btn" data-panel="dashboard">📊 Dashboard</button>
+            <button class="nav-btn" data-panel="typing">⌨️ Typing</button>
+            <button class="nav-btn" data-panel="cps">🖱️ CPS</button>
+            <button class="nav-btn" data-panel="timer">⏱️ Timer</button>
+        </div>
 
-    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
-    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
-    toggleBtn.addEventListener('click', openSidebar);
-    closeBtn.addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
+        <!-- ===== PANEL: HOME ===== -->
+        <div class="panel active" id="panel-home">
+            <h2><span class="emoji">🏠</span> Welcome</h2>
+            <div class="home-welcome">
+                <strong>ZeroForge</strong> — a sleek typing suite with <span class="highlight">WPM</span>, <span class="highlight">CPS</span>, and <span class="highlight">timer</span> tools.<br />
+                All data stays in your browser. Pick a test from the tabs above.
+            </div>
+            <div class="stat-grid">
+                <div class="stat-item"><span class="stat-label">Best WPM</span><span class="stat-value accent" id="home-best-wpm">—</span></div>
+                <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green" id="home-avg-acc">—</span></div>
+                <div class="stat-item"><span class="stat-label">Tests</span><span class="stat-value teal" id="home-tests">0</span></div>
+            </div>
+            <div class="home-actions">
+                <button class="btn-action" id="home-typing-btn">▶ Start Typing</button>
+                <button class="btn-action btn-secondary" id="home-cps-btn">🖱️ CPS Test</button>
+            </div>
+        </div>
 
-    // quick nav from sidebar
-    document.querySelectorAll('.quick-nav button').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const panel = this.dataset.panel;
-        if (panel) {
-          document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-          document.querySelector(`.nav-btn[data-panel="${panel}"]`)?.classList.add('active');
-          document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-          document.getElementById(`panel-${panel}`)?.classList.add('active');
-        }
-        closeSidebar();
-      });
-    });
+        <!-- ===== PANEL: DASHBOARD ===== -->
+        <div class="panel" id="panel-dashboard">
+            <h2><span class="emoji">📊</span> Full Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="card"><div class="num" id="dash-best-wpm">—</div><div class="lbl">Best WPM</div></div>
+                <div class="card"><div class="num green" id="dash-avg-acc">—</div><div class="lbl">Avg Accuracy</div></div>
+                <div class="card"><div class="num teal" id="dash-tests">0</div><div class="lbl">Tests Taken</div></div>
+                <div class="card"><div class="num" id="dash-clicks">0</div><div class="lbl">Total Clicks</div></div>
+            </div>
+            <p style="color:#4a8aa8;font-size:0.9rem;font-weight:300;">Stats are saved locally. Use the sidebar to reset.</p>
+        </div>
 
-    // ----- PROFILE STORAGE -----
-    function loadProfile() {
-      try {
-        const raw = localStorage.getItem('zero_forge_profile');
-        if (raw) return JSON.parse(raw);
-      } catch (_) {}
-      return { bestWpm: 0, totalTests: 0, totalClicks: 0, accSum: 0, accCount: 0 };
-    }
-    function saveProfile(p) { localStorage.setItem('zero_forge_profile', JSON.stringify(p)); }
+        <!-- ===== PANEL: TYPING ===== -->
+        <div class="panel" id="panel-typing">
+            <h2><span class="emoji">⌨️</span> Typing Test</h2>
+            <div class="stat-grid">
+                <div class="stat-item"><span class="stat-label">WPM</span><span class="stat-value accent" id="wpm-display">0</span></div>
+                <div class="stat-item"><span class="stat-label">Accuracy</span><span class="stat-value green" id="acc-display">100%</span></div>
+                <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="typing-timer">0s</span></div>
+                <div class="stat-item"><span class="stat-label">Characters</span><span class="stat-value" id="char-display">0/0</span></div>
+            </div>
+            <div class="words-container" id="words-display">
+                <span class="pending">Click "Start Test" to begin</span>
+            </div>
+            <input type="text" id="typing-input" placeholder="Type here…" disabled autofocus />
+            <div class="typing-controls">
+                <button class="btn-action" id="typing-start-btn">▶ Start Test</button>
+                <button class="btn-action btn-secondary" id="typing-reset-btn">⟲ Reset</button>
+                <div class="timer-display" id="typing-timer-large">00:00</div>
+                <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
+                    <label style="color:#4a8aa8;font-size:14px;font-weight:400;">Words:</label>
+                    <select id="word-count-select">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
 
-    function updateAllUI() {
-      const p = loadProfile();
-      const best = p.bestWpm || 0;
-      const avg = p.accCount > 0 ? Math.round(p.accSum / p.accCount) : 0;
-      // sidebar
-      document.getElementById('side-best-wpm').textContent = best || '—';
-      document.getElementById('side-avg-acc').textContent = avg ? avg + '%' : '—';
-      document.getElementById('side-tests').textContent = p.totalTests || 0;
-      document.getElementById('side-clicks').textContent = p.totalClicks || 0;
-      // home
-      document.getElementById('home-best-wpm').textContent = best || '—';
-      document.getElementById('home-avg-acc').textContent = avg ? avg + '%' : '—';
-      document.getElementById('home-tests').textContent = p.totalTests || 0;
-      // dashboard
-      document.getElementById('dash-best-wpm').textContent = best || '—';
-      document.getElementById('dash-avg-acc').textContent = avg ? avg + '%' : '—';
-      document.getElementById('dash-tests').textContent = p.totalTests || 0;
-      document.getElementById('dash-clicks').textContent = p.totalClicks || 0;
-    }
+        <!-- ===== PANEL: CPS ===== -->
+        <div class="panel" id="panel-cps">
+            <h2><span class="emoji">🖱️</span> CPS (Clicks Per Second)</h2>
+            <div class="cps-area">
+                <div class="cps-stats">
+                    <div class="stat-item"><span class="stat-label">CPS</span><span class="stat-value accent" id="cps-value">0.00</span></div>
+                    <div class="stat-item"><span class="stat-label">Clicks</span><span class="stat-value" id="clicks-value">0</span></div>
+                    <div class="stat-item"><span class="stat-label">Time</span><span class="stat-value orange" id="cps-time">0.0s</span></div>
+                </div>
+                <button class="cps-btn" id="cps-click-btn">
+                    🖱️
+                    <span class="sub">Click me</span>
+                </button>
+                <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                    <button class="btn-action" id="cps-start-btn">▶ Start Test</button>
+                    <button class="btn-action btn-secondary" id="cps-reset-btn">⟲ Reset</button>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <label style="color:#4a8aa8;font-size:14px;font-weight:400;">Duration (s):</label>
+                        <input type="number" id="cps-duration" value="5" min="1" max="60" style="width:60px;padding:8px;background:rgba(0,0,0,0.25);border:1px solid rgba(0,212,255,0.08);border-radius:12px;color:#e8f4fc;text-align:center;font-family:'JetBrains Mono',monospace;">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // home quick buttons
-    document.getElementById('home-typing-btn').addEventListener('click', function() {
-      document.querySelector('.nav-btn[data-panel="typing"]')?.click();
-    });
-    document.getElementById('home-cps-btn').addEventListener('click', function() {
-      document.querySelector('.nav-btn[data-panel="cps"]')?.click();
-    });
+        <!-- ===== PANEL: TIMER ===== -->
+        <div class="panel" id="panel-timer">
+            <h2><span class="emoji">⏱️</span> Timer · Stopwatch &amp; Countdown</h2>
+            <div class="timer-panel">
+                <div class="timer-big" id="timer-display">00:00:00</div>
+                <div class="timer-controls">
+                    <button class="btn-action" id="timer-start-btn">▶ Start</button>
+                    <button class="btn-action btn-secondary" id="timer-pause-btn">⏸ Pause</button>
+                    <button class="btn-action btn-secondary" id="timer-reset-btn">⟲ Reset</button>
+                </div>
+                <div class="timer-input-group">
+                    <label>⏳ Countdown (seconds):</label>
+                    <input type="number" id="countdown-input" value="60" min="0" max="3600">
+                    <button class="btn-action btn-secondary" id="countdown-set-btn" style="padding:8px 22px;font-size:14px;">Set</button>
+                    <button class="btn-action btn-secondary" id="stopwatch-mode-btn" style="padding:8px 22px;font-size:14px;">Stopwatch</button>
+                </div>
+                <div id="timer-mode-label">Mode: Stopwatch</div>
+            </div>
+        </div>
+    </div>
 
-    // ----- WORD LIST -----
-    const WORD_POOL = [
-      "the","be","to","of","and","a","in","that","have","i","it","for","not","on","with","he","as","you","do","at",
-      "this","but","his","by","from","they","we","say","her","she","or","an","will","my","one","all","would","there",
-      "their","what","so","up","out","if","about","who","get","which","go","me","when","make","can","like","time",
-      "no","just","him","know","take","people","into","year","your","good","some","could","them","see","other","than",
-      "then","now","look","only","come","its","over","think","also","back","after","use","two","how","our","work",
-      "first","well","way","even","new","want","because","any","these","give","day","most","us","is","am","are","was",
-      "were","been","being","have","has","had","do","does","did","will","would","could","should","may","might","must"
-    ];
-    function shuffleArray(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-    function getWordList(n) { return shuffleArray([...WORD_POOL]).slice(0,n); }
+    <script>
+        (function() {
+            "use strict";
 
-    // ----- TYPING TEST -----
-    const typing = {
-      words: [], currentIndex: 0, typedChars: [], startTime: null, timerInterval: null,
-      isActive: false, isFinished: false, wordCount: 25, elapsedSeconds: 0
-    };
-    const wordsDisplay = document.getElementById('words-display');
-    const typingInput = document.getElementById('typing-input');
-    const wpmDisplay = document.getElementById('wpm-display');
-    const accDisplay = document.getElementById('acc-display');
-    const typingTimer = document.getElementById('typing-timer');
-    const typingTimerLarge = document.getElementById('typing-timer-large');
-    const charDisplay = document.getElementById('char-display');
+            // ─── PARTICLES ───
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const particles = [];
+            const PARTICLE_COUNT = 100;
 
-    function updateTypingDisplay() {
-      const { words, currentIndex, typedChars } = typing;
-      if (!words.length) {
-        wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
-        return;
-      }
-      let html = '';
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        let wordHtml = '';
-        for (let j = 0; j < word.length; j++) {
-          const ch = word[j];
-          let cls = 'pending';
-          if (i < currentIndex) {
-            const typed = typedChars[i] || '';
-            cls = (j < typed.length && typed[j] === ch) ? 'correct' : 'incorrect';
-          } else if (i === currentIndex) {
-            const typed = typedChars[i] || '';
-            if (j < typed.length) cls = (typed[j] === ch) ? 'correct' : 'incorrect';
-            else if (j === typed.length) cls = 'current';
-            else cls = 'pending';
-          }
-          wordHtml += `<span class="${cls}">${ch}</span>`;
-        }
-        if (i < words.length - 1) wordHtml += ' ';
-        html += wordHtml;
-      }
-      wordsDisplay.innerHTML = html;
-      let totalTyped = 0;
-      for (let i = 0; i < typing.typedChars.length; i++) totalTyped += typing.typedChars[i].length;
-      const totalChars = words.join('').length + (words.length - 1);
-      charDisplay.textContent = `${totalTyped}/${totalChars}`;
-    }
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
 
-    function updateAccuracy() {
-      let correct = 0, total = 0;
-      for (let i = 0; i < typing.words.length; i++) {
-        const word = typing.words[i];
-        const typed = typing.typedChars[i] || '';
-        for (let j = 0; j < word.length; j++) {
-          if (j < typed.length) { total++; if (typed[j] === word[j]) correct++; }
-          else total++;
-        }
-        if (typed.length > word.length) total += (typed.length - word.length);
-      }
-      const acc = total > 0 ? Math.round((correct/total)*100) : 100;
-      accDisplay.textContent = acc + '%';
-      return acc;
-    }
+            class Particle {
+                constructor() {
+                    this.reset();
+                    this.y = height + 30;
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = height + 30 + Math.random() * 50;
+                    this.size = 2 + Math.random() * 6;
+                    this.speed = 0.3 + Math.random() * 0.9;
+                    this.opacity = 0.2 + Math.random() * 0.5;
+                    this.hue = 170 + Math.random() * 50;
+                    this.sat = 60 + Math.random() * 30;
+                    this.light = 50 + Math.random() * 30;
+                    this.drift = (Math.random() - 0.5) * 0.4;
+                }
+                update() {
+                    this.y -= this.speed;
+                    this.x += Math.sin(this.y * 0.006) * 0.3 + this.drift * 0.2;
+                    if (this.y < -20) {
+                        this.reset();
+                        this.y = height + 30;
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
+                    gradient.addColorStop(0, `hsla(${this.hue}, ${this.sat}%, ${this.light}%, ${this.opacity})`);
+                    gradient.addColorStop(1, `hsla(${this.hue}, ${this.sat}%, ${this.light}%, 0)`);
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+                    ctx.shadowColor = `hsla(${this.hue}, 80%, 70%, ${this.opacity * 0.3})`;
+                    ctx.shadowBlur = 20;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
 
-    function finishTypingTest() {
-      if (typing.isFinished) return;
-      typing.isActive = false;
-      typing.isFinished = true;
-      typingInput.disabled = true;
-      if (typing.timerInterval) clearInterval(typing.timerInterval);
-      document.getElementById('typing-start-btn').disabled = false;
-      const elapsed = typing.elapsedSeconds;
-      const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
-      let wpm = 0;
-      if (elapsed > 0 && typedCount > 0) wpm = Math.round((typedCount/5)/(elapsed/60));
-      const acc = updateAccuracy();
-      const profile = loadProfile();
-      profile.totalTests += 1;
-      if (wpm > profile.bestWpm) profile.bestWpm = wpm;
-      profile.accSum += acc;
-      profile.accCount += 1;
-      saveProfile(profile);
-      updateAllUI();
-      wpmDisplay.textContent = wpm;
-    }
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const p = new Particle();
+                p.y = Math.random() * height;
+                particles.push(p);
+            }
 
-    function startTypingTest() {
-      if (typing.isActive) return;
-      const count = parseInt(document.getElementById('word-count-select').value, 10) || 25;
-      typing.wordCount = count;
-      typing.words = getWordList(count);
-      typing.currentIndex = 0;
-      typing.typedChars = [];
-      typing.isActive = true;
-      typing.isFinished = false;
-      typing.startTime = null;
-      typing.elapsedSeconds = 0;
-      typingInput.disabled = false;
-      typingInput.value = '';
-      typingInput.focus();
-      document.getElementById('typing-start-btn').disabled = true;
-      if (typing.timerInterval) clearInterval(typing.timerInterval);
-      typing.startTime = Date.now();
-      typing.timerInterval = setInterval(() => {
-        if (!typing.isActive) return;
-        const elapsed = (Date.now() - typing.startTime) / 1000;
-        typing.elapsedSeconds = elapsed;
-        const mins = Math.floor(elapsed/60), secs = Math.floor(elapsed%60);
-        typingTimerLarge.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-        typingTimer.textContent = Math.floor(elapsed) + 's';
-        const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
-        if (typedCount > 0 && elapsed > 0) {
-          const wpm = Math.round((typedCount/5)/(elapsed/60));
-          wpmDisplay.textContent = wpm;
-        }
-        updateAccuracy();
-      }, 100);
-      typing.typedChars = [];
-      updateTypingDisplay();
-    }
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => { p.update();
+                    p.draw(); });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
 
-    function resetTyping() {
-      if (typing.timerInterval) clearInterval(typing.timerInterval);
-      typing.isActive = false;
-      typing.isFinished = false;
-      typing.words = [];
-      typing.typedChars = [];
-      typing.currentIndex = 0;
-      typing.startTime = null;
-      typing.elapsedSeconds = 0;
-      typingInput.value = '';
-      typingInput.disabled = true;
-      document.getElementById('typing-start-btn').disabled = false;
-      wpmDisplay.textContent = '0';
-      accDisplay.textContent = '100%';
-      typingTimer.textContent = '0s';
-      typingTimerLarge.textContent = '00:00';
-      charDisplay.textContent = '0/0';
-      wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
-    }
+            // ─── INTRO OVERLAY ───
+            const intro = document.getElementById('intro-overlay');
+            setTimeout(() => intro.classList.add('hidden'), 2800);
 
-    typingInput.addEventListener('input', function(e) {
-      if (!typing.isActive || typing.isFinished) return;
-      const value = this.value;
-      const typedWords = value.split(' ');
-      for (let i = 0; i < typedWords.length; i++) {
-        if (i >= typing.words.length) break;
-        typing.typedChars[i] = typedWords[i];
-      }
-      if (value.endsWith(' ') && typedWords.length <= typing.words.length) {
-        const idx = typedWords.length - 2;
-        if (idx >= 0 && idx < typing.words.length) {
-          typing.currentIndex = typedWords.length - 1;
-        }
-      } else {
-        const count = typedWords.length;
-        if (count <= typing.words.length) typing.currentIndex = count - 1;
-        if (typing.currentIndex < 0) typing.currentIndex = 0;
-      }
-      const nonEmpty = typing.typedChars.filter(w => w !== undefined).length;
-      if (nonEmpty === typing.words.length) {
-        const last = typing.typedChars[typing.words.length-1] || '';
-        if (last.length === typing.words[typing.words.length-1].length) {
-          const expected = typing.words.join(' ');
-          if (value === expected) finishTypingTest();
-        }
-      }
-      updateTypingDisplay();
-      const elapsed = (Date.now() - typing.startTime) / 1000;
-      if (elapsed > 0) {
-        const typedCount = typing.typedChars.reduce((s,w) => s + (w?w.length:0), 0);
-        if (typedCount > 0) {
-          const wpm = Math.round((typedCount/5)/(elapsed/60));
-          wpmDisplay.textContent = wpm;
-        }
-      }
-      updateAccuracy();
-    });
+            // ─── SIDEBAR ───
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            const closeBtn = document.getElementById('sidebar-close-btn');
 
-    document.getElementById('typing-start-btn').addEventListener('click', startTypingTest);
-    document.getElementById('typing-reset-btn').addEventListener('click', resetTyping);
+            function openSidebar() { sidebar.classList.add('open');
+                overlay.classList.add('active'); }
 
-    // ----- CPS TEST -----
-    const cps = { isActive: false, clicks: 0, startTime: null, duration: 5, timerInterval: null };
-    const cpsBtn = document.getElementById('cps-click-btn');
-    const cpsValue = document.getElementById('cps-value');
-    const clicksValue = document.getElementById('clicks-value');
-    const cpsTime = document.getElementById('cps-time');
+            function closeSidebar() { sidebar.classList.remove('open');
+                overlay.classList.remove('active'); }
+            toggleBtn.addEventListener('click', openSidebar);
+            closeBtn.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
 
-    function updateCpsUI() {
-      clicksValue.textContent = cps.clicks;
-      const elapsed = cps.isActive ? (Date.now() - cps.startTime)/1000 : 0;
-      cpsTime.textContent = elapsed.toFixed(1) + 's';
-      cpsValue.textContent = elapsed > 0 ? (cps.clicks/elapsed).toFixed(2) : '0.00';
-    }
+            document.querySelectorAll('.quick-nav button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const panel = this.dataset.panel;
+                    if (panel) {
+                        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelector(`.nav-btn[data-panel="${panel}"]`)?.classList.add('active');
+                        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                        document.getElementById(`panel-${panel}`)?.classList.add('active');
+                    }
+                    closeSidebar();
+                });
+            });
 
-    function stopCpsTest() {
-      if (!cps.isActive) return;
-      cps.isActive = false;
-      cpsBtn.disabled = true;
-      clearInterval(cps.timerInterval);
-      document.getElementById('cps-start-btn').disabled = false;
-      updateCpsUI();
-      const profile = loadProfile();
-      profile.totalClicks += cps.clicks;
-      saveProfile(profile);
-      updateAllUI();
-      cpsBtn.textContent = '🖱️\nDone';
-    }
+            // ─── PROFILE STORAGE ───
+            function loadProfile() {
+                try {
+                    const raw = localStorage.getItem('zero_forge_profile');
+                    if (raw) return JSON.parse(raw);
+                } catch (_) {}
+                return { bestWpm: 0, totalTests: 0, totalClicks: 0, accSum: 0, accCount: 0 };
+            }
 
-    function startCpsTest() {
-      if (cps.isActive) return;
-      const dur = parseInt(document.getElementById('cps-duration').value, 10) || 5;
-      if (dur < 1) return;
-      cps.duration = dur;
-      cps.isActive = true;
-      cps.clicks = 0;
-      cps.startTime = Date.now();
-      cpsBtn.disabled = false;
-      cpsBtn.textContent = '🖱️\nClick!';
-      document.getElementById('cps-start-btn').disabled = true;
-      updateCpsUI();
-      if (cps.timerInterval) clearInterval(cps.timerInterval);
-      cps.timerInterval = setInterval(() => {
-        if (!cps.isActive) return;
-        const elapsed = (Date.now() - cps.startTime)/1000;
-        if (elapsed >= cps.duration) stopCpsTest();
-        else updateCpsUI();
-      }, 50);
-    }
+            function saveProfile(p) { localStorage.setItem('zero_forge_profile', JSON.stringify(p)); }
 
-    function resetCps() {
-      cps.isActive = false;
-      cps.clicks = 0;
-      cps.startTime = null;
-      clearInterval(cps.timerInterval);
-      cpsBtn.disabled = false;
-      cpsBtn.textContent = '🖱️\nClick me';
-      document.getElementById('cps-start-btn').disabled = false;
-      updateCpsUI();
-      cpsValue.textContent = '0.00';
-      clicksValue.textContent = '0';
-      cpsTime.textContent = '0.0s';
-    }
+            function updateAllUI() {
+                const p = loadProfile();
+                const best = p.bestWpm || 0;
+                const avg = p.accCount > 0 ? Math.round(p.accSum / p.accCount) : 0;
+                document.getElementById('side-best-wpm').textContent = best || '—';
+                document.getElementById('side-avg-acc').textContent = avg ? avg + '%' : '—';
+                document.getElementById('side-tests').textContent = p.totalTests || 0;
+                document.getElementById('side-clicks').textContent = p.totalClicks || 0;
+                document.getElementById('home-best-wpm').textContent = best || '—';
+                document.getElementById('home-avg-acc').textContent = avg ? avg + '%' : '—';
+                document.getElementById('home-tests').textContent = p.totalTests || 0;
+                document.getElementById('dash-best-wpm').textContent = best || '—';
+                document.getElementById('dash-avg-acc').textContent = avg ? avg + '%' : '—';
+                document.getElementById('dash-tests').textContent = p.totalTests || 0;
+                document.getElementById('dash-clicks').textContent = p.totalClicks || 0;
+            }
 
-    cpsBtn.addEventListener('click', function() { if (cps.isActive) { cps.clicks++; updateCpsUI(); } });
-    document.getElementById('cps-start-btn').addEventListener('click', startCpsTest);
-    document.getElementById('cps-reset-btn').addEventListener('click', resetCps);
+            document.getElementById('home-typing-btn').addEventListener('click', function() {
+                document.querySelector('.nav-btn[data-panel="typing"]')?.click();
+            });
+            document.getElementById('home-cps-btn').addEventListener('click', function() {
+                document.querySelector('.nav-btn[data-panel="cps"]')?.click();
+            });
 
-    // ----- TIMER (with alarm) -----
-    const timer = {
-      mode: 'stopwatch',
-      running: false,
-      elapsed: 0,
-      interval: null,
-      countdownTarget: 60,
-      alarmTriggered: false
-    };
-    const timerDisplay = document.getElementById('timer-display');
-    const timerModeLabel = document.getElementById('timer-mode-label');
+            // ─── WORD POOL ───
+            const WORD_POOL = [
+                "the", "be", "to", "of", "and", "a", "in", "that", "have", "i", "it", "for", "not", "on", "with",
+                "he", "as", "you", "do", "at", "this", "but", "his", "by", "from", "they", "we", "say", "her", "she",
+                "or", "an", "will", "my", "one", "all", "would", "there", "their", "what", "so", "up", "out", "if",
+                "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just",
+                "him", "know", "take", "people", "into", "year", "your", "good", "some", "could", "them", "see",
+                "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also", "back",
+                "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because",
+                "any", "these", "give", "day", "most", "us", "am", "are", "was", "were", "been", "being", "have",
+                "has", "had", "do", "does", "did", "will", "would", "could", "should", "may", "might", "must"
+            ];
 
-    function formatTime(sec) {
-      const h = Math.floor(sec/3600);
-      const m = Math.floor((sec%3600)/60);
-      const s = Math.floor(sec%60);
-      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+            function shuffleArray(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (
+                        i + 1));
+                    [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-    function playAlarm() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 880;
-        osc.type = 'square';
-        gain.gain.value = 0.12;
-        osc.start();
-        setTimeout(() => { osc.stop(); ctx.close(); }, 500);
-      } catch(e) { console.warn('Alarm not supported'); }
-    }
+            function getWordList(n) { return shuffleArray([...WORD_POOL]).slice(0, n); }
 
-    function updateTimerDisplay() {
-      let displaySec = timer.elapsed;
-      if (timer.mode === 'countdown') {
-        displaySec = Math.max(0, timer.countdownTarget - timer.elapsed);
-        if (displaySec === 0 && timer.running && !timer.alarmTriggered) {
-          timer.alarmTriggered = true;
-          playAlarm();
-        }
-      }
-      timerDisplay.textContent = formatTime(displaySec);
-    }
+            // ─── TYPING TEST ───
+            const typing = {
+                words: [],
+                currentIndex: 0,
+                typedChars: [],
+                startTime: null,
+                timerInterval: null,
+                isActive: false,
+                isFinished: false,
+                wordCount: 25,
+                elapsedSeconds: 0
+            };
+            const wordsDisplay = document.getElementById('words-display');
+            const typingInput = document.getElementById('typing-input');
+            const wpmDisplay = document.getElementById('wpm-display');
+            const accDisplay = document.getElementById('acc-display');
+            const typingTimer = document.getElementById('typing-timer');
+            const typingTimerLarge = document.getElementById('typing-timer-large');
+            const charDisplay = document.getElementById('char-display');
 
-    function timerTick() {
-      timer.elapsed += 0.1;
-      if (timer.mode === 'countdown') {
-        if (timer.elapsed >= timer.countdownTarget) {
-          timer.elapsed = timer.countdownTarget;
-          timer.running = false;
-          clearInterval(timer.interval);
-          document.getElementById('timer-start-btn').disabled = false;
-          updateTimerDisplay();
-          if (!timer.alarmTriggered) {
-            timer.alarmTriggered = true;
-            playAlarm();
-          }
-          return;
-        }
-      }
-      updateTimerDisplay();
-    }
+            function updateTypingDisplay() {
+                const { words, currentIndex, typedChars } = typing;
+                if (!words.length) {
+                    wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
+                    return;
+                }
+                let html = '';
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    let wordHtml = '';
+                    for (let j = 0; j < word.length; j++) {
+                        const ch = word[j];
+                        let cls = 'pending';
+                        if (i < currentIndex) {
+                            const typed = typedChars[i] || '';
+                            cls = (j < typed.length && typed[j] === ch) ? 'correct' : 'incorrect';
+                        } else if (i === currentIndex) {
+                            const typed = typedChars[i] || '';
+                            if (j < typed.length) cls = (typed[j] === ch) ? 'correct' : 'incorrect';
+                            else if (j === typed.length) cls = 'current';
+                            else cls = 'pending';
+                        }
+                        wordHtml += `<span class="${cls}">${ch}</span>`;
+                    }
+                    if (i < words.length - 1) wordHtml += ' ';
+                    html += wordHtml;
+                }
+                wordsDisplay.innerHTML = html;
+                let totalTyped = 0;
+                for (let i = 0; i < typing.typedChars.length; i++) totalTyped += typing.typedChars[i].length;
+                const totalChars = words.join('').length + (words.length - 1);
+                charDisplay.textContent = `${totalTyped}/${totalChars}`;
+            }
 
-    function startTimer() {
-      if (timer.running) return;
-      timer.running = true;
-      timer.alarmTriggered = false;
-      if (timer.mode === 'countdown') {
-        const val = parseInt(document.getElementById('countdown-input').value, 10);
-        if (val > 0) timer.countdownTarget = val;
-        else timer.countdownTarget = 60;
-        timer.elapsed = 0;
-      } else {
-        timer.elapsed = 0;
-      }
-      updateTimerDisplay();
-      clearInterval(timer.interval);
-      timer.interval = setInterval(timerTick, 100);
-      document.getElementById('timer-start-btn').disabled = true;
-    }
+            function updateAccuracy() {
+                let correct = 0,
+                    total = 0;
+                for (let i = 0; i < typing.words.length; i++) {
+                    const word = typing.words[i];
+                    const typed = typing.typedChars[i] || '';
+                    for (let j = 0; j < word.length; j++) {
+                        if (j < typed.length) { total++; if (typed[j] === word[j]) correct++; } else total++;
+                    }
+                    if (typed.length > word.length) total += (typed.length - word.length);
+                }
+                const acc = total > 0 ? Math.round((correct / total) * 100) : 100;
+                accDisplay.textContent = acc + '%';
+                return acc;
+            }
 
-    function pauseTimer() {
-      if (!timer.running) return;
-      timer.running = false;
-      clearInterval(timer.interval);
-      document.getElementById('timer-start-btn').disabled = false;
-    }
+            function finishTypingTest() {
+                if (typing.isFinished) return;
+                typing.isActive = false;
+                typing.isFinished = true;
+                typingInput.disabled = true;
+                if (typing.timerInterval) clearInterval(typing.timerInterval);
+                document.getElementById('typing-start-btn').disabled = false;
+                const elapsed = typing.elapsedSeconds;
+                const typedCount = typing.typedChars.reduce((s, w) => s + (w ? w.length : 0), 0);
+                let wpm = 0;
+                if (elapsed > 0 && typedCount > 0) wpm = Math.round((typedCount / 5) / (elapsed / 60));
+                const acc = updateAccuracy();
+                const profile = loadProfile();
+                profile.totalTests += 1;
+                if (wpm > profile.bestWpm) profile.bestWpm = wpm;
+                profile.accSum += acc;
+                profile.accCount += 1;
+                saveProfile(profile);
+                updateAllUI();
+                wpmDisplay.textContent = wpm;
+            }
 
-    function resetTimer() {
-      clearInterval(timer.interval);
-      timer.running = false;
-      timer.elapsed = 0;
-      timer.alarmTriggered = false;
-      if (timer.mode === 'countdown') {
-        const val = parseInt(document.getElementById('countdown-input').value, 10);
-        if (val > 0) timer.countdownTarget = val;
-        else timer.countdownTarget = 60;
-      }
-      updateTimerDisplay();
-      document.getElementById('timer-start-btn').disabled = false;
-    }
+            function startTypingTest() {
+                if (typing.isActive) return;
+                const count = parseInt(document.getElementById('word-count-select').value, 10) || 25;
+                typing.wordCount = count;
+                typing.words = getWordList(count);
+                typing.currentIndex = 0;
+                typing.typedChars = [];
+                typing.isActive = true;
+                typing.isFinished = false;
+                typing.startTime = null;
+                typing.elapsedSeconds = 0;
+                typingInput.disabled = false;
+                typingInput.value = '';
+                typingInput.focus();
+                document.getElementById('typing-start-btn').disabled = true;
+                if (typing.timerInterval) clearInterval(typing.timerInterval);
+                typing.startTime = Date.now();
+                typing.timerInterval = setInterval(() => {
+                    if (!typing.isActive) return;
+                    const elapsed = (Date.now() - typing.startTime) / 1000;
+                    typing.elapsedSeconds = elapsed;
+                    const mins = Math.floor(elapsed / 60),
+                        secs = Math.floor(elapsed % 60);
+                    typingTimerLarge.textContent =
+                    `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+                    typingTimer.textContent = Math.floor(elapsed) + 's';
+                    const typedCount = typing.typedChars.reduce((s, w) => s + (w ? w.length : 0), 0);
+                    if (typedCount > 0 && elapsed > 0) {
+                        const wpm = Math.round((typedCount / 5) / (elapsed / 60));
+                        wpmDisplay.textContent = wpm;
+                    }
+                    updateAccuracy();
+                }, 100);
+                typing.typedChars = [];
+                updateTypingDisplay();
+            }
 
-    function setCountdown() {
-      const val = parseInt(document.getElementById('countdown-input').value, 10);
-      if (val > 0) {
-        timer.mode = 'countdown';
-        timer.countdownTarget = val;
-        timer.elapsed = 0;
-        timer.alarmTriggered = false;
-        resetTimer();
-        timerModeLabel.textContent = 'Mode: Countdown ('+val+'s)';
-      } else alert('Enter a positive number.');
-    }
+            function resetTyping() {
+                if (typing.timerInterval) clearInterval(typing.timerInterval);
+                typing.isActive = false;
+                typing.isFinished = false;
+                typing.words = [];
+                typing.typedChars = [];
+                typing.currentIndex = 0;
+                typing.startTime = null;
+                typing.elapsedSeconds = 0;
+                typingInput.value = '';
+                typingInput.disabled = true;
+                document.getElementById('typing-start-btn').disabled = false;
+                wpmDisplay.textContent = '0';
+                accDisplay.textContent = '100%';
+                typingTimer.textContent = '0s';
+                typingTimerLarge.textContent = '00:00';
+                charDisplay.textContent = '0/0';
+                wordsDisplay.innerHTML = `<span class="pending">Click "Start Test" to begin</span>`;
+            }
 
-    function setStopwatch() {
-      timer.mode = 'stopwatch';
-      timer.elapsed = 0;
-      timer.alarmTriggered = false;
-      resetTimer();
-      timerModeLabel.textContent = 'Mode: Stopwatch';
-    }
+            typingInput.addEventListener('input', function(e) {
+                if (!typing.isActive || typing.isFinished) return;
+                const value = this.value;
+                const typedWords = value.split(' ');
+                for (let i = 0; i < typedWords.length; i++) {
+                    if (i >= typing.words.length) break;
+                    typing.typedChars[i] = typedWords[i];
+                }
+                if (value.endsWith(' ') && typedWords.length <= typing.words.length) {
+                    const idx = typedWords.length - 2;
+                    if (idx >= 0 && idx < typing.words.length) {
+                        typing.currentIndex = typedWords.length - 1;
+                    }
+                } else {
+                    const count = typedWords.length;
+                    if (count <= typing.words.length) typing.currentIndex = count - 1;
+                    if (typing.currentIndex < 0) typing.currentIndex = 0;
+                }
+                const nonEmpty = typing.typedChars.filter(w => w !== undefined).length;
+                if (nonEmpty === typing.words.length) {
+                    const last = typing.typedChars[typing.words.length - 1] || '';
+                    if (last.length === typing.words[typing.words.length - 1].length) {
+                        const expected = typing.words.join(' ');
+                        if (value === expected) finishTypingTest();
+                    }
+                }
+                updateTypingDisplay();
+                const elapsed = (Date.now() - typing.startTime) / 1000;
+                if (elapsed > 0) {
+                    const typedCount = typing.typedChars.reduce((s, w) => s + (w ? w.length : 0), 0);
+                    if (typedCount > 0) {
+                        const wpm = Math.round((typedCount / 5) / (elapsed / 60));
+                        wpmDisplay.textContent = wpm;
+                    }
+                }
+                updateAccuracy();
+            });
 
-    document.getElementById('timer-start-btn').addEventListener('click', startTimer);
-    document.getElementById('timer-pause-btn').addEventListener('click', pauseTimer);
-    document.getElementById('timer-reset-btn').addEventListener('click', resetTimer);
-    document.getElementById('countdown-set-btn').addEventListener('click', setCountdown);
-    document.getElementById('stopwatch-mode-btn').addEventListener('click', setStopwatch);
+            document.getElementById('typing-start-btn').addEventListener('click', startTypingTest);
+            document.getElementById('typing-reset-btn').addEventListener('click', resetTyping);
 
-    // ----- NAVIGATION -----
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const panels = {
-      home: document.getElementById('panel-home'),
-      dashboard: document.getElementById('panel-dashboard'),
-      typing: document.getElementById('panel-typing'),
-      cps: document.getElementById('panel-cps'),
-      timer: document.getElementById('panel-timer')
-    };
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
-        const panel = this.dataset.panel;
-        navBtns.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === panel));
-      });
-    });
+            // ─── CPS ───
+            const cps = { isActive: false, clicks: 0, startTime: null, duration: 5, timerInterval: null };
+            const cpsBtn = document.getElementById('cps-click-btn');
+            const cpsValue = document.getElementById('cps-value');
+            const clicksValue = document.getElementById('clicks-value');
+            const cpsTime = document.getElementById('cps-time');
 
-    // ----- SIDEBAR RESET -----
-    document.getElementById('side-reset-btn').addEventListener('click', function() {
-      if (confirm('Reset all stats?')) {
-        localStorage.removeItem('zero_forge_profile');
-        updateAllUI();
-        resetTyping();
-        resetCps();
-        resetTimer();
-      }
-    });
+            function updateCpsUI() {
+                clicksValue.textContent = cps.clicks;
+                const elapsed = cps.isActive ? (Date.now() - cps.startTime) / 1000 : 0;
+                cpsTime.textContent = elapsed.toFixed(1) + 's';
+                cpsValue.textContent = elapsed > 0 ? (cps.clicks / elapsed).toFixed(2) : '0.00';
+            }
 
-    // ----- INIT -----
-    resetTyping();
-    resetCps();
-    resetTimer();
-    updateAllUI();
-    document.getElementById('word-count-select').value = '25';
-    document.getElementById('cps-duration').value = '5';
-    timerModeLabel.textContent = 'Mode: Stopwatch';
+            function stopCpsTest() {
+                if (!cps.isActive) return;
+                cps.isActive = false;
+                cpsBtn.disabled = true;
+                clearInterval(cps.timerInterval);
+                document.getElementById('cps-start-btn').disabled = false;
+                updateCpsUI();
+                const profile = loadProfile();
+                profile.totalClicks += cps.clicks;
+                saveProfile(profile);
+                updateAllUI();
+                cpsBtn.innerHTML = '🖱️<span class="sub">Done</span>';
+            }
 
-  })();
-</script>
+            function startCpsTest() {
+                if (cps.isActive) return;
+                const dur = parseInt(document.getElementById('cps-duration').value, 10) || 5;
+                if (dur < 1) return;
+                cps.duration = dur;
+                cps.isActive = true;
+                cps.clicks = 0;
+                cps.startTime = Date.now();
+                cpsBtn.disabled = false;
+                cpsBtn.innerHTML = '🖱️<span class="sub">Click!</span>';
+                document.getElementById('cps-start-btn').disabled = true;
+                updateCpsUI();
+                if (cps.timerInterval) clearInterval(cps.timerInterval);
+                cps.timerInterval = setInterval(() => {
+                    if (!cps.isActive) return;
+                    const elapsed = (Date.now() - cps.startTime) / 1000;
+                    if (elapsed >= cps.duration) stopCpsTest();
+                    else updateCpsUI();
+                }, 50);
+            }
+
+            function resetCps() {
+                cps.isActive = false;
+                cps.clicks = 0;
+                cps.startTime = null;
+                clearInterval(cps.timerInterval);
+                cpsBtn.disabled = false;
+                cpsBtn.innerHTML = '🖱️<span class="sub">Click me</span>';
+                document.getElementById('cps-start-btn').disabled = false;
+                updateCpsUI();
+                cpsValue.textContent = '0.00';
+                clicksValue.textContent = '0';
+                cpsTime.textContent = '0.0s';
+            }
+
+            cpsBtn.addEventListener('click', function() { if (cps.isActive) { cps.clicks++;
+                    updateCpsUI(); } });
+            document.getElementById('cps-start-btn').addEventListener('click', startCpsTest);
+            document.getElementById('cps-reset-btn').addEventListener('click', resetCps);
+
+            // ─── TIMER ───
+            const timer = {
+                mode: 'stopwatch',
+                running: false,
+                elapsed: 0,
+                interval: null,
+                countdownTarget: 60,
+                alarmTriggered: false
+            };
+            const timerDisplay = document.getElementById('timer-display');
+            const timerModeLabel = document.getElementById('timer-mode-label');
+
+            function formatTime(sec) {
+                const h = Math.floor(sec / 3600);
+                const m = Math.floor((sec % 3600) / 60);
+                const s = Math.floor(sec % 60);
+                return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }
+
+            function playAlarm() {
+                try {
+                    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = 880;
+                    osc.type = 'square';
+                    gain.gain.value = 0.08;
+                    osc.start();
+                    setTimeout(() => { osc.stop();
+                        ctx.close(); }, 500);
+                } catch (e) {}
+            }
+
+            function updateTimerDisplay() {
+                let displaySec = timer.elapsed;
+                if (timer.mode === 'countdown') {
+                    displaySec = Math.max(0, timer.countdownTarget - timer.elapsed);
+                    if (displaySec === 0 && timer.running && !timer.alarmTriggered) {
+                        timer.alarmTriggered = true;
+                        playAlarm();
+                    }
+                }
+                timerDisplay.textContent = formatTime(displaySec);
+            }
+
+            function timerTick() {
+                timer.elapsed += 0.1;
+                if (timer.mode === 'countdown') {
+                    if (timer.elapsed >= timer.countdownTarget) {
+                        timer.elapsed = timer.countdownTarget;
+                        timer.running = false;
+                        clearInterval(timer.interval);
+                        document.getElementById('timer-start-btn').disabled = false;
+                        updateTimerDisplay();
+                        if (!timer.alarmTriggered) {
+                            timer.alarmTriggered = true;
+                            playAlarm();
+                        }
+                        return;
+                    }
+                }
+                updateTimerDisplay();
+            }
+
+            function startTimer() {
+                if (timer.running) return;
+                timer.running = true;
+                timer.alarmTriggered = false;
+                if (timer.mode === 'countdown') {
+                    const val = parseInt(document.getElementById('countdown-input').value, 10);
+                    if (val > 0) timer.countdownTarget = val;
+                    else timer.countdownTarget = 60;
+                    timer.elapsed = 0;
+                } else {
+                    timer.elapsed = 0;
+                }
+                updateTimerDisplay();
+                clearInterval(timer.interval);
+                timer.interval = setInterval(timerTick, 100);
+                document.getElementById('timer-start-btn').disabled = true;
+            }
+
+            function pauseTimer() {
+                if (!timer.running) return;
+                timer.running = false;
+                clearInterval(timer.interval);
+                document.getElementById('timer-start-btn').disabled = false;
+            }
+
+            function resetTimer() {
+                clearInterval(timer.interval);
+                timer.running = false;
+                timer.elapsed = 0;
+                timer.alarmTriggered = false;
+                if (timer.mode === 'countdown') {
+                    const val = parseInt(document.getElementById('countdown-input').value, 10);
+                    if (val > 0) timer.countdownTarget = val;
+                    else timer.countdownTarget = 60;
+                }
+                updateTimerDisplay();
+                document.getElementById('timer-start-btn').disabled = false;
+            }
+
+            function setCountdown() {
+                const val = parseInt(document.getElementById('countdown-input').value, 10);
+                if (val > 0) {
+                    timer.mode = 'countdown';
+                    timer.countdownTarget = val;
+                    timer.elapsed = 0;
+                    timer.alarmTriggered = false;
+                    resetTimer();
+                    timerModeLabel.textContent = 'Mode: Countdown (' + val + 's)';
+                } else alert('Enter a positive number.');
+            }
+
+            function setStopwatch() {
+                timer.mode = 'stopwatch';
+                timer.elapsed = 0;
+                timer.alarmTriggered = false;
+                resetTimer();
+                timerModeLabel.textContent = 'Mode: Stopwatch';
+            }
+
+            document.getElementById('timer-start-btn').addEventListener('click', startTimer);
+            document.getElementById('timer-pause-btn').addEventListener('click', pauseTimer);
+            document.getElementById('timer-reset-btn').addEventListener('click', resetTimer);
+            document.getElementById('countdown-set-btn').addEventListener('click', setCountdown);
+            document.getElementById('stopwatch-mode-btn').addEventListener('click', setStopwatch);
+
+            // ─── NAVIGATION ───
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const panels = {
+                home: document.getElementById('panel-home'),
+                dashboard: document.getElementById('panel-dashboard'),
+                typing: document.getElementById('panel-typing'),
+                cps: document.getElementById('panel-cps'),
+                timer: document.getElementById('panel-timer')
+            };
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const panel = this.dataset.panel;
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === panel));
+                });
+            });
+
+            // ─── SIDEBAR RESET ───
+            document.getElementById('side-reset-btn').addEventListener('click', function() {
+                if (confirm('Reset all stats?')) {
+                    localStorage.removeItem('zero_forge_profile');
+                    updateAllUI();
+                    resetTyping();
+                    resetCps();
+                    resetTimer();
+                }
+            });
+
+            // ─── INIT ───
+            resetTyping();
+            resetCps();
+            resetTimer();
+            updateAllUI();
+            document.getElementById('word-count-select').value = '25';
+            document.getElementById('cps-duration').value = '5';
+            timerModeLabel.textContent = 'Mode: Stopwatch';
+
+        })();
+    </script>
 </body>
 </html>
